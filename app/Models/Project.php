@@ -18,13 +18,17 @@ class Project extends Model
         'status', 
         'asal_instansi',
         'tanggal_mulai', 
-        'dokumen'
+        'dokumen',
+        'latitude',
+        'longitude'
     ];
 
     protected $casts = [
         'contract_date' => 'date',
         'tanggal_mulai' => 'datetime',
         'created_at' => 'datetime',
+        'latitude' => 'decimal:7',
+        'longitude' => 'decimal:7',
     ];
 
     public function client()
