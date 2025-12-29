@@ -14,6 +14,16 @@
                     <div class="prose max-w-none text-sm text-gray-600">{{ $project->deskripsi ?? '-' }}</div>
                 </div>
 
+                <div class="mt-6">
+                    <label class="block mb-2 font-medium text-gray-700">Lokasi</label>
+                    @if($project->latitude && $project->longitude)
+                        <p class="text-sm text-gray-600">Latitude: {{ $project->latitude }}, Longitude: {{ $project->longitude }}</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ $project->latitude }},{{ $project->longitude }}" target="_blank" rel="noopener noreferrer" class="text-sm text-green-600 underline">Lihat di Google Maps</a>
+                    @else
+                        <p class="text-sm text-gray-600">Belum ada lokasi</p>
+                    @endif
+                </div>
+
                 <div class="mt-6 flex justify-end">
                     @if(\Illuminate\Support\Facades\Route::has('projects.edit'))
                         <a href="{{ route('projects.edit', $project->id) }}" class="inline-flex items-center px-4 py-2 bg-yellow-50 text-yellow-700 rounded-md mr-2">Edit</a>

@@ -23,6 +23,8 @@ class ProjectController extends Controller
             'contact_person' => $request->contact_person,
             'deskripsi'      => $request->deskripsi,
             'status'         => 'pending',
+            'latitude'       => $request->latitude ?? null,
+            'longitude'      => $request->longitude ?? null,
         ]);
 
         if ($request->hasFile('documents')) {
@@ -56,9 +58,30 @@ class ProjectController extends Controller
             'nama_project' => 'required|string|max:255',
             'deskripsi'    => 'nullable|string',
             'status'       => 'nullable|string|in:pending,proses,selesai',
+            'latitude'     => 'nullable|numeric',
+            'longitude'    => 'nullable|numeric',
         ]);
 
-        $project->update($data);
+        // Update core fields (keep existing behaviour)
+        $project->update(
+            array_intersect_key($data, array_flip(['nama_project', 'deskripsi', 'status']))
+        );
+
+        // Only update coordinates if the request provided them (allow keeping existing values)
+        $coordsChanged = false;
+        if ($request->filled('latitude')) {
+            $project->latitude = $request->input('latitude');
+            $coordsChanged = true;
+        }
+
+        if ($request->filled('longitude')) {
+            $project->longitude = $request->input('longitude');
+            $coordsChanged = true;
+        }
+
+        if ($coordsChanged) {
+            $project->save();
+        }
 
         return redirect()->route('properti.karyawan')->with('success', 'Project updated');
     }
