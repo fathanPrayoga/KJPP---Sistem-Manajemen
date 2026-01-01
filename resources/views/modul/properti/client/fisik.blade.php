@@ -7,51 +7,67 @@
                 <!-- Left Side: 3 Cards -->
                 <div class="lg:col-span-1 space-y-6">
                     <!-- Dokumen Card -->
-                    <a href="{{ route('properti.dokumen') }}" class="block">
-                        <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-shadow cursor-pointer border border-gray-50">
+                    <!-- Dokumen -->
+                    <a href="{{ route('properti.dokumen') }}" class="block group">
+                        <div
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
+                                hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
+                                transition-all cursor-pointer border {{ request()->routeIs('properti.dokumen') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
+                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
+                                        group-hover:scale-105 transition-transform">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800 text-lg">Dokumen</h3>
-                                    <p class="text-gray-400 text-sm">Properti</p>
+                                    <p class="text-gray-400 text-sm">Upload & Kelola Berkas</p>
                                 </div>
                             </div>
                         </div>
                     </a>
 
-                    <!-- Fisik Card (active) -->
-                    <a href="{{ route('properti.fisik') }}" class="block" aria-current="page">
-                        <div class="bg-[#F0FDF4] p-8 rounded-[35px] shadow-[0_12px_24px_rgba(130,193,125,0.12)] transition-all cursor-default border-2 border-[#82C17D]">
+                    <!-- Fisik -->
+                    <a href="{{ route('properti.fisik') }}" class="block group">
+                        <div
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
+                                hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
+                                transition-all cursor-pointer border {{ request()->routeIs('properti.fisik') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
-                                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"></path>
+                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
+                                        group-hover:scale-105 transition-transform">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 14l9-5-9-5-9 5 9 5z" />
                                     </svg>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800 text-lg">Fisik</h3>
-                                    <p class="text-[#1F7A3A] text-sm font-medium">Properti</p>
+                                    <p class="text-gray-400 text-sm">Status Objek Properti</p>
                                 </div>
                             </div>
                         </div>
                     </a>
 
-                    <!-- Penilaian Card -->
-                    <a href="{{ route('properti.penilaian') }}" class="block">
-                        <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-shadow cursor-pointer border border-gray-50">
+                    <!-- Penilaian -->
+                    <a href="{{ route('properti.penilaian') }}" class="block group">
+                        <div
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
+                                hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
+                                transition-all cursor-pointer border {{ request()->routeIs('properti.penilaian') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
+                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
+                                        group-hover:scale-105 transition-transform">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4" />
                                     </svg>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800 text-lg">Penilaian</h3>
-                                    <p class="text-gray-400 text-sm">Properti</p>
+                                    <p class="text-gray-400 text-sm">Hasil & Review Penilaian</p>
                                 </div>
                             </div>
                         </div>
@@ -73,16 +89,20 @@
                             </thead>
                             <tbody class="text-sm">
                                 @forelse($projects as $project)
-                                <tr class="border-b last:border-0 hover:bg-gray-50 transition">
-                                    <td class="py-4 font-medium text-gray-800">{{ $project->nama_project ?? 'Project' }}</td>
-                                    <td class="py-4 text-sm font-medium text-gray-700">{{ ucfirst($project->status ?? '-') }}</td>
-                                    <td class="py-4 text-gray-600">{{ $project->documents->count() ?? 0 }}</td>
-                                    <td class="py-4 font-semibold text-gray-800">{{ $project->created_at->format('H.i') }}</td>
-                                </tr>
+                                    <tr class="border-b last:border-0 hover:bg-gray-50 transition">
+                                        <td class="py-4 font-medium text-gray-800">{{ $project->nama_project ?? 'Project' }}
+                                        </td>
+                                        <td class="py-4 text-sm font-medium text-gray-700">
+                                            {{ ucfirst($project->status ?? '-') }}</td>
+                                        <td class="py-4 text-gray-600">{{ $project->documents->count() ?? 0 }}</td>
+                                        <td class="py-4 font-semibold text-gray-800">
+                                            {{ $project->created_at->format('H.i') }}</td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="4" class="text-center py-8 text-gray-400 italic">Belum ada project.</td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-center py-8 text-gray-400 italic">Belum ada project.
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>

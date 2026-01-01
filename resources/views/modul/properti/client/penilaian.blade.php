@@ -5,49 +5,67 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-1 space-y-6">
-                    <a href="{{ route('properti.dokumen') }}" class="block">
-                        <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-shadow cursor-pointer border border-gray-50">
+                    <!-- Dokumen -->
+                    <a href="{{ route('properti.dokumen') }}" class="block group">
+                        <div
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
+                                hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
+                                transition-all cursor-pointer border {{ request()->routeIs('properti.dokumen') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
+                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
+                                        group-hover:scale-105 transition-transform">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800 text-lg">Dokumen</h3>
-                                    <p class="text-gray-400 text-sm">Properti</p>
+                                    <p class="text-gray-400 text-sm">Upload & Kelola Berkas</p>
                                 </div>
                             </div>
                         </div>
                     </a>
 
-                    <a href="{{ route('properti.fisik') }}" class="block">
-                        <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-shadow cursor-pointer border border-gray-50">
+                    <!-- Fisik -->
+                    <a href="{{ route('properti.fisik') }}" class="block group">
+                        <div
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
+                                hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
+                                transition-all cursor-pointer border {{ request()->routeIs('properti.fisik') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
-                                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"></path>
+                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
+                                        group-hover:scale-105 transition-transform">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 14l9-5-9-5-9 5 9 5z" />
                                     </svg>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800 text-lg">Fisik</h3>
-                                    <p class="text-gray-400 text-sm">Properti</p>
+                                    <p class="text-gray-400 text-sm">Status Objek Properti</p>
                                 </div>
                             </div>
                         </div>
                     </a>
 
-                    <a href="{{ route('properti.penilaian') }}" class="block">
-                        <div class="bg-green-50 p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-shadow cursor-pointer border border-gray-50 ring-2 ring-[#82C17D] ring-offset-2">
+                    <!-- Penilaian -->
+                    <a href="{{ route('properti.penilaian') }}" class="block group">
+                        <div
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
+                                hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
+                                transition-all cursor-pointer border {{ request()->routeIs('properti.penilaian') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
+                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
+                                        group-hover:scale-105 transition-transform">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4" />
                                     </svg>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800 text-lg">Penilaian</h3>
-                                    <p class="text-gray-400 text-sm">Properti</p>
+                                    <p class="text-gray-400 text-sm">Hasil & Review Penilaian</p>
                                 </div>
                             </div>
                         </div>
@@ -69,47 +87,49 @@
                                 {{-- SAFETY CHECK: Ensure $projects exists before looping --}}
                                 @if(isset($projects))
                                     @forelse($projects as $project)
-                                    <tr class="border-b last:border-0 hover:bg-gray-50 transition cursor-pointer" 
-                                        onclick="openNilaiModal({{ $project->id }}, '{{ $project->nama_project }}', '{{ addslashes($project->deskripsi) }}', '{{ $project->contact_person }}')">
-                                        
-                                        <td class="py-4 text-gray-600">
-                                            {{ $project->nama_project ?? '-' }}
-                                        </td>
-                                        
-                                        <td class="py-4 font-semibold text-gray-800">
-                                            {{ optional($project->created_at)->format('H.i') ?? '-' }}
-                                        </td>
+                                        <tr class="border-b last:border-0 hover:bg-gray-50 transition cursor-pointer"
+                                            onclick="openNilaiModal({{ $project->id }}, '{{ $project->nama_project }}', '{{ addslashes($project->deskripsi) }}', '{{ $project->contact_person }}')">
 
-                                        <td class="py-4">
-                                            @php
-                                                $nilaiStatus = 'belum dinilai';
-                                                if ($project->nilai) {
-                                                    $nilaiStatus = $project->nilai->status_penilaian?->value ?? 'belum dinilai';
-                                                }
-                                            @endphp
-                                            <span class="
-                                                px-3 py-1 rounded-full text-xs font-semibold
-                                                @if($nilaiStatus === 'belum dinilai')
-                                                    bg-red-100 text-red-700
-                                                @elseif($nilaiStatus === 'sedang dinilai')
-                                                    bg-yellow-100 text-yellow-700
-                                                @elseif($nilaiStatus === 'sudah dinilai')
-                                                    bg-green-100 text-green-700
-                                                @endif
-                                            ">
-                                                {{ str_replace('_', ' ', ucfirst($nilaiStatus)) }}
-                                            </span>
-                                        </td>
-                                    </tr>
+                                            <td class="py-4 text-gray-600">
+                                                {{ $project->nama_project ?? '-' }}
+                                            </td>
+
+                                            <td class="py-4 font-semibold text-gray-800">
+                                                {{ optional($project->created_at)->format('H.i') ?? '-' }}
+                                            </td>
+
+                                            <td class="py-4">
+                                                @php
+                                                    $nilaiStatus = 'belum dinilai';
+                                                    if ($project->nilai) {
+                                                        $nilaiStatus = $project->nilai->status_penilaian?->value ?? 'belum dinilai';
+                                                    }
+                                                @endphp
+                                                <span class="
+                                                        px-3 py-1 rounded-full text-xs font-semibold
+                                                        @if($nilaiStatus === 'belum dinilai')
+                                                            bg-red-100 text-red-700
+                                                        @elseif($nilaiStatus === 'sedang dinilai')
+                                                            bg-yellow-100 text-yellow-700
+                                                        @elseif($nilaiStatus === 'sudah dinilai')
+                                                            bg-green-100 text-green-700
+                                                        @endif
+                                                    ">
+                                                    {{ str_replace('_', ' ', ucfirst($nilaiStatus)) }}
+                                                </span>
+                                            </td>
+                                        </tr>
                                     @empty
-                                    <tr>
-                                        <td colspan="3" class="text-center py-8 text-gray-400 italic">Belum ada project.</td>
-                                    </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-center py-8 text-gray-400 italic">Belum ada project.
+                                            </td>
+                                        </tr>
                                     @endforelse
                                 @else
                                     {{-- Fallback if variable is missing entirely --}}
                                     <tr>
-                                        <td colspan="3" class="text-center py-8 text-red-400 italic">Error: Data project tidak ditemukan.</td>
+                                        <td colspan="3" class="text-center py-8 text-red-400 italic">Error: Data project
+                                            tidak ditemukan.</td>
                                     </tr>
                                 @endif
                             </tbody>
@@ -121,7 +141,8 @@
     </div>
 
     <!-- Modal Nilai Properti (Read-Only for Client) -->
-    <div id="nilaiModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+    <div id="nilaiModal"
+        class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-[30px] shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div class="p-8">
                 <!-- Modal Header -->
@@ -138,7 +159,8 @@
                         <p id="projectDesc" class="text-gray-700 mt-1">-</p>
                     </div>
                     <div>
-                        <label class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Contact Person</label>
+                        <label class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Contact
+                            Person</label>
                         <p id="projectContact" class="text-gray-700 mt-1">-</p>
                     </div>
                 </div>
@@ -212,7 +234,7 @@
 
                     <!-- Modal Footer -->
                     <div class="flex gap-3 mt-8 pt-6 border-t border-gray-200">
-                        <button type="button" onclick="closeNilaiModal()" 
+                        <button type="button" onclick="closeNilaiModal()"
                             class="w-full px-4 py-3 bg-[#82C17D] text-white font-semibold rounded-lg hover:bg-[#6fa86a] transition">
                             Tutup
                         </button>
@@ -240,7 +262,7 @@
             document.getElementById('projectName').textContent = projectName;
             document.getElementById('projectDesc').textContent = projectDesc;
             document.getElementById('projectContact').textContent = projectContact;
-            
+
             document.getElementById('nilaiModal').classList.remove('hidden');
 
             // Fetch existing nilai data
@@ -281,7 +303,7 @@
         }
 
         // Close modal when clicking outside of it
-        document.getElementById('nilaiModal').addEventListener('click', function(e) {
+        document.getElementById('nilaiModal').addEventListener('click', function (e) {
             if (e.target === this) {
                 closeNilaiModal();
             }

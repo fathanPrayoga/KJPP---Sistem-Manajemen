@@ -5,11 +5,15 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-1 space-y-6">
-                    <a href="{{ route('laporan.project') }}" class="block">
+                    <a href="{{ route('laporan.project') }}" class="block group">
                         <div
-                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-50">
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] 
+                                   hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] 
+                                   transition-all cursor-pointer border 
+                                   {{ request()->routeIs('laporan.project') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
+                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg 
+                                            group-hover:scale-105 transition-transform">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 5h6m2 0h1a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h1m2-2h6a2 2 0 012 2v2H7V5a2 2 0 012-2z" />
@@ -23,11 +27,15 @@
                         </div>
                     </a>
 
-                    <a href="{{ route('laporan.tahunan') }}" class="block">
+                    <a href="{{ route('laporan.tahunan') }}" class="block group">
                         <div
-                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-50">
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] 
+                                   hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] 
+                                   transition-all cursor-pointer border 
+                                   {{ request()->routeIs('laporan.tahunan') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
+                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg 
+                                            group-hover:scale-105 transition-transform">
                                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M8 7V3m8 4V3M5 11h14M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -66,8 +74,8 @@
                                         <td>{{ $project->nama_project }}</td>
                                         <td>
                                             <span
-                                                class="px-3 py-1 rounded-full text-xs {{ $project->status === 'Selesai' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
-                                                {{ $project->status }}
+                                                class="px-3 py-1 rounded-full text-xs {{ strtolower($project->status) === 'selesai' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
+                                                {{ ucfirst($project->status) }}
                                             </span>
                                         </td>
                                         <td>
