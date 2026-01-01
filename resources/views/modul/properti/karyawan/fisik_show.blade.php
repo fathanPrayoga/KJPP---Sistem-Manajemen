@@ -7,7 +7,8 @@
                 <h2 class="text-lg font-semibold text-gray-800">{{ $project->nama_project }}</h2>
                 <p class="text-sm text-gray-500">Client: {{ $project->client->name ?? 'Unknown' }}</p>
                 <p class="text-sm text-gray-500">Status: {{ ucfirst($project->status ?? '-') }}</p>
-                <p class="text-sm text-gray-500">Contract Date: {{ optional($project->contract_date)->format('Y-m-d') ?? '-' }}</p>
+                <p class="text-sm text-gray-500">Contract Date:
+                    {{ optional($project->contract_date)->format('Y-m-d') ?? '-' }}</p>
 
                 <div class="mt-6">
                     <label class="block mb-2 font-medium text-gray-700">Deskripsi</label>
@@ -17,8 +18,11 @@
                 <div class="mt-6">
                     <label class="block mb-2 font-medium text-gray-700">Lokasi</label>
                     @if($project->latitude && $project->longitude)
-                        <p class="text-sm text-gray-600">Latitude: {{ $project->latitude }}, Longitude: {{ $project->longitude }}</p>
-                        <a href="https://www.google.com/maps/search/?api=1&query={{ $project->latitude }},{{ $project->longitude }}" target="_blank" rel="noopener noreferrer" class="text-sm text-green-600 underline">Lihat di Google Maps</a>
+                        <p class="text-sm text-gray-600">Latitude: {{ $project->latitude }}, Longitude:
+                            {{ $project->longitude }}</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ $project->latitude }},{{ $project->longitude }}"
+                            target="_blank" rel="noopener noreferrer" class="text-sm text-green-600 underline">Lihat di
+                            Google Maps</a>
                     @else
                         <p class="text-sm text-gray-600">Belum ada lokasi</p>
                     @endif
@@ -26,9 +30,16 @@
 
                 <div class="mt-6 flex justify-end">
                     @if(\Illuminate\Support\Facades\Route::has('projects.edit'))
-                        <a href="{{ route('projects.edit', $project->id) }}" class="inline-flex items-center px-4 py-2 bg-yellow-50 text-yellow-700 rounded-md mr-2">Edit</a>
+                        <a href="{{ route('projects.edit', $project->id) }}"
+                            class="inline-flex items-center px-4 py-2 bg-yellow-50 text-yellow-700 rounded-md mr-2">Edit</a>
                     @endif
-                    <a href="{{ route('properti.karyawan') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md">Back</a>
+                    @if(auth()->user()->role === 'client')
+                        <a href="{{ route('properti.fisik') }}"
+                            class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md">Back</a>
+                    @else
+                        <a href="{{ route('properti.karyawan') }}"
+                            class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md">Back</a>
+                    @endif
                 </div>
             </div>
         </div>

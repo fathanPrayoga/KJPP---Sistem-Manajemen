@@ -14,7 +14,7 @@
                     <a href="{{ route('properti.dokumen') }}" class="block group">
                         <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
                                     hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
-                                    transition-all cursor-pointer border border-gray-50">
+                                    transition-all cursor-pointer border {{ request()->routeIs('properti.dokumen') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
                                 <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
                                             group-hover:scale-105 transition-transform">
@@ -35,7 +35,7 @@
                     <a href="{{ route('properti.fisik') }}" class="block group">
                         <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
                                     hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
-                                    transition-all cursor-pointer border border-gray-50">
+                                    transition-all cursor-pointer border {{ request()->routeIs('properti.fisik') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
                                 <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
                                             group-hover:scale-105 transition-transform">
@@ -56,7 +56,7 @@
                     <a href="{{ route('properti.penilaian') }}" class="block group">
                         <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
                                     hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
-                                    transition-all cursor-pointer border border-gray-50">
+                                    transition-all cursor-pointer border {{ request()->routeIs('properti.penilaian') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
                                 <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
                                             group-hover:scale-105 transition-transform">

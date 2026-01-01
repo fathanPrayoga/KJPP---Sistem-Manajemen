@@ -162,8 +162,16 @@ class PropertiController extends Controller
     // ===== MODULE LAPORAN =====
     public function laporanProject()
     {
-        $projects = Project::with('client')->latest()->get();
-        return view('modul.properti.laporan.project', compact('projects'));
+        $role = auth()->user()->role;
+
+        if ($role === 'karyawan') {
+            $projects = Project::with('client')->latest()->get();
+            return view('modul.properti.laporan.project', compact('projects'));
+        } else {
+            // Client - Read Only & Own Data
+            $projects = Project::where('client_id', auth()->id())->latest()->get();
+            return view('modul.properti.client.laporan', compact('projects'));
+        }
     }
 
     public function getProject($id)
@@ -234,32 +242,32 @@ class PropertiController extends Controller
         return back()->with('success', 'Project dan laporan berhasil dihapus');
     }
     public function downloadZipTahunan($year)
-{
-    $projects = Project::whereYear('tanggal_mulai', $year)
-        ->whereNotNull('dokumen')
-        ->get();
+    {
+        $projects = Project::whereYear('tanggal_mulai', $year)
+            ->whereNotNull('dokumen')
+            ->get();
 
-    if ($projects->isEmpty()) {
-        return back()->with('error', 'Tidak ada dokumen untuk diunduh pada tahun ini.');
-    }
-
-    $zipFileName = 'Laporan_Tahunan_' . $year . '.zip';
-    $zipFilePath = public_path($zipFileName); // Gunakan public_path
-    $zip = new \ZipArchive;
-
-    if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
-        foreach ($projects as $project) {
-            $filePath = storage_path('app/public/' . $project->dokumen);
-
-            if (file_exists($filePath)) {
-                // Gunakan nama project sebagai nama file di dalam ZIP
-                $namaFileDalamZip = str_replace(' ', '_', $project->nama_project) . '.pdf';
-                $zip->addFile($filePath, $namaFileDalamZip);
-            }
+        if ($projects->isEmpty()) {
+            return back()->with('error', 'Tidak ada dokumen untuk diunduh pada tahun ini.');
         }
-        $zip->close();
-    }
 
-    return response()->download($zipFilePath)->deleteFileAfterSend(true);
-}
+        $zipFileName = 'Laporan_Tahunan_' . $year . '.zip';
+        $zipFilePath = public_path($zipFileName); // Gunakan public_path
+        $zip = new \ZipArchive;
+
+        if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
+            foreach ($projects as $project) {
+                $filePath = storage_path('app/public/' . $project->dokumen);
+
+                if (file_exists($filePath)) {
+                    // Gunakan nama project sebagai nama file di dalam ZIP
+                    $namaFileDalamZip = str_replace(' ', '_', $project->nama_project) . '.pdf';
+                    $zip->addFile($filePath, $namaFileDalamZip);
+                }
+            }
+            $zip->close();
+        }
+
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    }
 }
