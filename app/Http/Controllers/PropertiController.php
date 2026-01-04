@@ -153,8 +153,27 @@ class PropertiController extends Controller
         $project->status = 'Selesai';
         $project->save();
 
+        // [FIX] Sinkronisasi ke tabel Laporan Tahunan
+        if ($request->hasFile('file') && $project->tanggal_mulai) {
+            try {
+                // Ambil tahun dari tanggal mulai
+                $year = \Carbon\Carbon::parse($project->tanggal_mulai)->year;
+
+                // Cek apakah sudah ada laporan untuk tahun ini & file ini (opsional, bisa create baru terus)
+                // Disini kita create baru saja sebagai log arsip
+                \App\Models\LaporanTahunan::create([
+                    'tahun' => $year,
+                    'nama_file' => 'Laporan Project ' . $project->nama_project,
+                    'file_path' => $project->dokumen, // Pakai path yang sama
+                ]);
+            } catch (\Exception $e) {
+                \Log::error("Gagal simpan ke LaporanTahunan: " . $e->getMessage());
+            }
+        }
+
         return back()->with('success', 'Laporan berhasil diperbarui');
     }
+
 
     public function laporanTahunan()
     {
@@ -178,10 +197,6 @@ class PropertiController extends Controller
 
         // NEW CODE (Node API)
         $projects = $this->nodeApi->getYearlyReport($year);
-
-        // Note: Node API saat ini query ke tabel 'laporan_tahunans'.
-        // Pastikan data sinkron atau logika Node.js disesuaikan jika ingin tetap ambil dari 'projects'.
-
         return response()->json(['tahun' => $year, 'files' => $projects]);
     }
 
