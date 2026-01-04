@@ -101,52 +101,76 @@
                                 </thead>
                                 <tbody class="text-sm">
                                     @forelse($projects as $project)
-                                        <tr class="border-b last:border-0 hover:bg-gray-50 transition">
-                                            <td class="py-4 text-center">
-                                                <input type="checkbox" class="w-5 h-5 projectCheckbox"
-                                                    value="{{ $project->id }}" onchange="updateActionButtons()">
-                                            </td>
-                                            <td class="py-4 font-medium text-gray-800">
-                                                {{ $project->client->name ?? 'Unknown' }}</td>
-                                            <td class="py-4 text-gray-600">{{ $project->nama_project }}</td>
-                                            <td class="py-4 text-center">
-                                                <span
-                                                    class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
-                                                    {{ $project->documents->count() }} File
-                                                </span>
-                                            </td>
-                                            <td class="py-4 text-center">
-                                                @php
-                                                    $allVerified = $project->documents->every(fn($d) => $d->status === 'verified');
-                                                    $hasRejected = $project->documents->some(fn($d) => $d->status === 'rejected');
-                                                    $hasPending = $project->documents->some(fn($d) => $d->status === 'pending');
-                                                @endphp
-                                                <span
-                                                    class="px-3 py-1 rounded-full text-xs font-semibold
-                                                    {{ $allVerified ? 'bg-green-100 text-green-800' : ($hasRejected ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                                    {{ $allVerified ? '✓ Verified' : ($hasRejected ? '✕ Rejected' : 'Pending') }}
-                                                </span>
-                                            </td>
-                                            <td class="py-4 text-right">
-                                                <button @click="open({
-                                                        id: {{ $project->id }},
-                                                        nama: @js($project->nama_project),
-                                                        documents: @js($project->documents->map(fn($d) => [
-                                                            'id' => $d->id,
-                                                            'nama' => $d->nama_file,
-                                                            'url' => route('karyawan.document.download', $d->id),
-                                                            'created_at' => $d->created_at->format('d M Y'),
-                                                        ])->toArray())
-                                                    })"
-                                                    class="inline-flex items-center px-4 py-2 bg-[#82C17D] hover:bg-[#6ba867] text-white text-xs font-bold rounded-full transition shadow-sm">
-                                                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                    </svg>
-                                                    Lihat
-                                                </button>
-                                            </td>
-                                        </tr>
+                                                                    <tr class="border-b last:border-0 hover:bg-gray-50 transition">
+                                                                        <td class="py-4 text-center">
+                                                                            <input type="checkbox" class="w-5 h-5 projectCheckbox"
+                                                                                value="{{ $project->id }}" onchange="updateActionButtons()">
+                                                                        </td>
+                                                                        <td class="py-4 font-medium text-gray-800">
+                                                                            {{ $project->client->name ?? 'Unknown' }}
+                                                                        </td>
+                                                                        <td class="py-4 text-gray-600">{{ $project->nama_project }}</td>
+                                                                        <td class="py-4 text-center">
+                                                                            <span
+                                                                                class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
+                                                                                {{ $project->documents->count() }} File
+                                                                            </span>
+                                                                        </td>
+                                                                        <td class="py-4 text-center">
+                                                                            @php
+                                                                                $docCount = $project->documents->count();
+                                                                                $projectStatus = strtolower($project->status ?? '');
+
+                                                                                if ($docCount > 0) {
+                                                                                    $allVerified = $project->documents->every(fn($d) => $d->status === 'verified');
+                                                                                    $hasRejected = $project->documents->some(fn($d) => $d->status === 'rejected');
+                                                                                    $displayStatus = $allVerified ? 'verified' : ($hasRejected ? 'rejected' : 'pending');
+                                                                                } else {
+                                                                                    // Fallback to project status if no documents
+                                                                                    // If project status is 'Selesai' (from other modules), map to verified? Or strictly checks 'verified'/'rejected'
+                                                                                    if ($projectStatus === 'verified' || $projectStatus === 'selesai' || $projectStatus === 'approved') {
+                                                                                        $displayStatus = 'verified';
+                                                                                    } elseif ($projectStatus === 'rejected' || $projectStatus === 'ditolak') {
+                                                                                        $displayStatus = 'rejected';
+                                                                                    } else {
+                                                                                        // Default for empty project: Warning/Pending or just Empty?
+                                                                                        // User wants to see "Rejected" if they clicked Reject.
+                                                                                        $displayStatus = 'pending';
+                                                                                    }
+                                                                                }
+                                                                            @endphp
+                                                                            <span
+                                                                                class="px-3 py-1 rounded-full text-xs font-semibold
+                                                                                    {{ $displayStatus === 'verified' ? 'bg-green-100 text-green-800' :
+                                        ($displayStatus === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                                                                                {{ $displayStatus === 'verified' ? '✓ Verified' :
+                                        ($displayStatus === 'rejected' ? '✕ Rejected' : 'Pending') }}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td class="py-4 text-right">
+                                                                            <button @click="open({
+                                                                                        id: {{ $project->id }},
+                                                                                        nama: @js($project->nama_project),
+                                                                                        documents: @js($project->documents->map(fn($d) => [
+                                                                                            'id' => $d->id,
+                                                                                            'nama' => $d->nama_file,
+                                                                                            'url' => route('karyawan.document.download', $d->id),
+                                                                                            'created_at' => $d->created_at->format('d M Y'),
+                                                                                        ])->toArray())
+                                                                                    })"
+                                                                                class="inline-flex items-center px-4 py-2 bg-[#82C17D] hover:bg-[#6ba867] text-white text-xs font-bold rounded-full transition shadow-sm">
+                                                                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor"
+                                                                                    viewBox="0 0 24 24">
+                                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                                        stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                                        stroke-width="2"
+                                                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                                                </svg>
+                                                                                Lihat
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
                                     @empty
                                         <tr>
                                             <td colspan="6" class="text-center py-8 text-gray-400 italic">Belum ada project.
@@ -172,11 +196,8 @@
             </div>
 
             <!-- MODAL DOKUMEN -->
-            <div x-show="isOpen" 
-                 x-cloak 
-                 x-transition.opacity
-                 class="fixed inset-0 z-50 flex items-center justify-center px-4"
-                 style="display: none;">
+            <div x-show="isOpen" x-cloak x-transition.opacity
+                class="fixed inset-0 z-50 flex items-center justify-center px-4" style="display: none;">
                 <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="close()"></div>
                 <div @click.stop
                     class="relative w-full max-w-lg rounded-[30px] shadow-2xl bg-white overflow-hidden z-10 max-h-[80vh] overflow-y-auto">

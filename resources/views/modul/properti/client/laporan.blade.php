@@ -49,19 +49,12 @@
                                         <td class="py-4">{{ $i + 1 }}.</td>
                                         <td class="py-4 font-medium text-gray-800">Laporan {{ $project->nama_project }}</td>
                                         <td class="py-4 text-right">
-                                            @if(strtolower($project->status) === 'selesai')
-                                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
-                                                    Selesai
-                                                </span>
-                                            @else
-                                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700">
-                                                    Pending
-                                                </span>
-                                            @endif
+                                            <x-status-badge :status="$project->status" />
                                         </td>
                                         <td class="py-4 text-right">
                                             @if($project->dokumen)
-                                                <button onclick="openDownloadModal('{{ $project->nama_project }}', '{{ asset('storage/' . $project->dokumen) }}')"
+                                                <button
+                                                    onclick="openDownloadModal('{{ $project->nama_project }}', '{{ asset('storage/' . $project->dokumen) }}')"
                                                     class="inline-flex items-center px-4 py-2 bg-[#82C17D] hover:bg-[#6ba867] text-white text-xs font-bold rounded-full transition shadow-sm">
                                                     Lihat
                                                 </button>
@@ -80,29 +73,36 @@
     </div>
 
     <!-- Modal Download Similar to Tahunan -->
-    <div id="downloadModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div id="downloadModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
         <div class="bg-white w-full max-w-md rounded-[25px] shadow-2xl overflow-hidden mx-4">
-            
+
             <div class="bg-[#82C17D] px-6 py-4 flex justify-between items-center text-white">
                 <h3 id="modalProjectTitle" class="font-bold text-lg">Laporan Project</h3>
                 <button onclick="closeDownloadModal()" class="hover:rotate-90 transition-transform">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
 
             <div class="p-6 space-y-4">
                 <div class="flex items-center justify-between py-3 border-b border-gray-100">
                     <span id="modalFileName" class="text-[15px] text-gray-800 font-semibold">nama_file.pdf</span>
-                    <a id="modalDownloadLink" href="#" target="_blank" class="text-gray-400 hover:text-[#82C17D] transition-colors">
+                    <a id="modalDownloadLink" href="#" target="_blank"
+                        class="text-gray-400 hover:text-[#82C17D] transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
                     </a>
                 </div>
             </div>
 
             <div class="p-6 pt-0 flex justify-end">
-                <a id="btnDownloadFull" href="#" target="_blank" class="bg-[#82C17D] hover:bg-[#6ba867] text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-md transition-all">
+                <a id="btnDownloadFull" href="#" target="_blank"
+                    class="bg-[#82C17D] hover:bg-[#6ba867] text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-md transition-all">
                     Unduh File
                 </a>
             </div>
@@ -117,7 +117,7 @@
             document.getElementById('modalFileName').innerText = 'Laporan ' + projectName + '.pdf';
             document.getElementById('modalDownloadLink').href = fileUrl;
             document.getElementById('btnDownloadFull').href = fileUrl;
-            
+
             modal.classList.remove('hidden');
         }
 

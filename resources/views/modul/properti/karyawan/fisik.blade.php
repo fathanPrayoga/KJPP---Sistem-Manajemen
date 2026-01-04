@@ -8,11 +8,14 @@
                 <div class="lg:col-span-1 space-y-6">
                     <!-- Dokumen Card -->
                     <a href="{{ route('properti.dokumen') }}" class="block">
-                        <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-shadow cursor-pointer border border-gray-50">
+                        <div
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-shadow cursor-pointer border border-gray-50">
                             <div class="flex items-center space-x-4">
                                 <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
                                     </svg>
                                 </div>
                                 <div>
@@ -25,11 +28,14 @@
 
                     <!-- Fisik Card (active) -->
                     <a href="{{ route('properti.fisik') }}" class="block" aria-current="page">
-                        <div class="bg-[#F0FDF4] p-8 rounded-[35px] shadow-[0_12px_24px_rgba(130,193,125,0.12)] transition-all cursor-default border-2 border-[#82C17D]">
+                        <div
+                            class="bg-[#F0FDF4] p-8 rounded-[35px] shadow-[0_12px_24px_rgba(130,193,125,0.12)] transition-all cursor-default border-2 border-[#82C17D]">
                             <div class="flex items-center space-x-4">
                                 <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
-                                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"></path>
+                                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"></path>
                                     </svg>
                                 </div>
                                 <div>
@@ -42,11 +48,13 @@
 
                     <!-- Penilaian Card -->
                     <a href="{{ route('properti.penilaian') }}" class="block">
-                        <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-shadow cursor-pointer border border-gray-50">
+                        <div
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-shadow cursor-pointer border border-gray-50">
                             <div class="flex items-center space-x-4">
                                 <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
                                 </div>
                                 <div>
@@ -74,29 +82,48 @@
                             </thead>
                             <tbody class="text-sm">
                                 @forelse($projects as $project)
-                                <tr class="border-b last:border-0 hover:bg-gray-50 transition">
-                                    <td class="py-4 font-medium text-gray-800">{{ $project->client->name ?? 'Unknown Client' }}</td>
-                                    <td class="py-4 text-gray-600">{{ $project->nama_project ?? 'Project' }}</td>
-                                    <td class="py-4 text-sm font-medium text-gray-700">{{ ucfirst($project->status ?? '-') }}</td>
-                                    <td class="py-4 font-semibold text-gray-800">{{ $project->created_at->format('H.i') }}</td>
-                                    <td class="py-4">
-                                        @if(\Illuminate\Support\Facades\Route::has('projects.show'))
-                                            <a href="{{ route('projects.show', $project->id) }}" class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-green-50 text-green-700 hover:bg-green-100 mr-2">View</a>
-                                        @else
-                                            <span class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-400 mr-2 cursor-not-allowed">View</span>
-                                        @endif
+                                    <tr class="border-b last:border-0 hover:bg-gray-50 transition">
+                                        <td class="py-4 font-medium text-gray-800">
+                                            {{ $project->client->name ?? 'Unknown Client' }}</td>
+                                        <td class="py-4 text-gray-600">{{ $project->nama_project ?? 'Project' }}</td>
+                                        <td class="py-4 text-sm font-medium text-gray-700">
+                                            {{ ucfirst($project->status ?? '-') }}</td>
+                                        <td class="py-4 font-semibold text-gray-800">
+                                            {{ $project->created_at->format('H.i') }}</td>
+                                        <td class="py-4">
+                                            @if(\Illuminate\Support\Facades\Route::has('projects.show'))
+                                                <a href="{{ route('projects.show', $project->id) }}"
+                                                    class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-green-50 text-green-700 hover:bg-green-100 mr-2">View</a>
+                                            @else
+                                                <span
+                                                    class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-400 mr-2 cursor-not-allowed">View</span>
+                                            @endif
 
-                                        @if(\Illuminate\Support\Facades\Route::has('projects.edit'))
-                                            <a href="{{ route('projects.edit', $project->id) }}" class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-yellow-50 text-yellow-700 hover:bg-yellow-100 mr-2">Edit</a>
-                                        @else
-                                            <span class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-400 mr-2 cursor-not-allowed">Edit</span>
-                                        @endif
-                                    </td>
-                                </tr>
+                                            @if(\Illuminate\Support\Facades\Route::has('projects.edit'))
+                                                <a href="{{ route('projects.edit', $project->id) }}"
+                                                    class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-yellow-50 text-yellow-700 hover:bg-yellow-100 mr-2">Edit</a>
+                                            @else
+                                                <span
+                                                    class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-400 mr-2 cursor-not-allowed">Edit</span>
+                                            @endif
+
+                                            {{-- Verification Button --}}
+                                            <a href="{{ route('survey.verification.page', $project->id) }}"
+                                                class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-sm transition">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                Verifikasi Survey
+                                            </a>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="4" class="text-center py-8 text-gray-400 italic">Belum ada project.</td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-center py-8 text-gray-400 italic">Belum ada project.
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>

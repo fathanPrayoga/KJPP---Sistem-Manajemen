@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Auth;
 
 class PropertiController extends Controller
 {
+    protected $nodeApi;
+
+    public function __construct(\App\Services\NodeApiService $nodeApi)
+    {
+        $this->nodeApi = $nodeApi;
+    }
+
     // ===== FUNGSI INDEX BERDASARKAN ROLE =====
 
     public function karyawan()
@@ -82,82 +89,9 @@ class PropertiController extends Controller
         }
     }
 
-    // ===== LOGIKA PENILAIAN (JSON) =====
+    // ===== LOGIKA PENILAIAN (PINDAH KE NilaiController) =====
+    // Code moved to App\Http\Controllers\NilaiController.php for Hybrid Architecture
 
-    public function getNilai($projectId)
-    {
-        $nilai = Nilai::where('project_id', $projectId)->first();
-
-        if ($nilai) {
-            return response()->json([
-                'exists' => true,
-                'id' => $nilai->id,
-                'status_penilaian' => $nilai->status_penilaian?->value,
-                'nilai_pasar_final' => $nilai->nilai_pasar_final,
-                'nilai_tanah' => $nilai->nilai_tanah,
-                'nilai_indikasi_dari_pasar' => $nilai->nilai_indikasi_dari_pasar,
-                'nilai_indikasi_dari_biaya' => $nilai->nilai_indikasi_dari_biaya,
-                'nilai_likuidasi' => $nilai->nilai_likuidasi,
-                'nilai_bangunan' => $nilai->nilai_bangunan,
-                'nilai_per_m2_tanah' => $nilai->nilai_per_m2_tanah,
-                'nilai_per_m2_bangunan' => $nilai->nilai_per_m2_bangunan,
-            ]);
-        }
-        return response()->json(['exists' => false]);
-    }
-
-    public function saveNilai(Request $request, $projectId)
-    {
-        $nilai = Nilai::where('project_id', $projectId)->first();
-        $selectedStatus = $request->input('status_penilaian');
-
-        if ($nilai && $nilai->status_penilaian?->value === 'sudah dinilai') {
-            return response()->json([
-                'success' => false,
-                'error' => 'Nilai tidak dapat diubah karena status sudah "Sudah Dinilai"'
-            ], 403);
-        }
-
-        $nilaiFields = [
-            'nilai_pasar_final',
-            'nilai_tanah',
-            'nilai_indikasi_dari_pasar',
-            'nilai_indikasi_dari_biaya',
-            'nilai_likuidasi',
-            'nilai_bangunan',
-            'nilai_per_m2_tanah',
-            'nilai_per_m2_bangunan'
-        ];
-
-        $hasAnyValue = false;
-        foreach ($nilaiFields as $field) {
-            if ($request->input($field)) {
-                $hasAnyValue = true;
-                break;
-            }
-        }
-
-        if (!$hasAnyValue) {
-            $finalStatus = 'belum dinilai';
-        } else if ($selectedStatus === 'sudah dinilai') {
-            $finalStatus = 'sudah dinilai';
-        } else {
-            $finalStatus = 'sedang dinilai';
-        }
-
-        if (!$nilai) {
-            $nilai = new Nilai();
-            $nilai->project_id = $projectId;
-        }
-
-        $nilai->status_penilaian = $finalStatus;
-        foreach ($nilaiFields as $field) {
-            $nilai->$field = $request->input($field);
-        }
-
-        $nilai->save();
-        return response()->json(['success' => true]);
-    }
 
     // ===== MODULE LAPORAN =====
     public function laporanProject()
@@ -174,10 +108,21 @@ class PropertiController extends Controller
         }
     }
 
+    // [INTEGRASI API NODE.JS] Ambil Detail Laporan Project
     public function getProject($id)
     {
-        $project = Project::findOrFail($id);
-        return response()->json($project);
+        // $project = Project::findOrFail($id);
+        // return response()->json($project);
+
+        // Panggil Node.js API
+        $data = $this->nodeApi->getReport($id);
+        // Node.js queries 'SELECT * FROM projects WHERE id = ?', returns array
+        $project = (!empty($data) && isset($data[0])) ? $data[0] : null;
+
+        if ($project) {
+            return response()->json($project);
+        }
+        return response()->json(['error' => 'Project not found (Node API)'], 404);
     }
 
     public function uploadLaporan(Request $request)
@@ -222,11 +167,20 @@ class PropertiController extends Controller
         return view('modul.properti.laporan.tahunan', compact('years'));
     }
 
+    // [INTEGRASI API NODE.JS] Ambil Laporan Tahunan
     public function getTahunanByYear($year)
     {
-        $projects = Project::whereYear('tanggal_mulai', $year)
-            ->whereNotNull('dokumen')
-            ->get();
+        // OLD CODE (Laravel Native)
+        // $projects = Project::whereYear('tanggal_mulai', $year)
+        //     ->whereNotNull('dokumen')
+        //     ->get();
+        // return response()->json(['tahun' => $year, 'files' => $projects]);
+
+        // NEW CODE (Node API)
+        $projects = $this->nodeApi->getYearlyReport($year);
+
+        // Note: Node API saat ini query ke tabel 'laporan_tahunans'.
+        // Pastikan data sinkron atau logika Node.js disesuaikan jika ingin tetap ambil dari 'projects'.
 
         return response()->json(['tahun' => $year, 'files' => $projects]);
     }
