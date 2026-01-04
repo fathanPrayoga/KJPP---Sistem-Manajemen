@@ -128,11 +128,22 @@
                         btnZip.href = `/laporan/tahunan/download-zip/${year}`;
                         btnZip.classList.remove('hidden');
 
-                        data.files.forEach(project => {
+                        data.files.forEach(item => {
+                            // Handle mismatch attributes (Node API vs Laravel)
+                            // Node API (laporan_tahunans): nama_file, file_path
+                            // Laravel (Backup/Old): nama_project, dokumen
+                            let name = item.nama_project || item.nama_file || 'Document';
+                            let path = item.dokumen || item.file_path || '#';
+
+                            // Clean up name if it creates double extension
+                            if (!name.toLowerCase().endsWith('.pdf')) {
+                                name += '.pdf';
+                            }
+
                             container.innerHTML += `
                             <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                                <span class="text-[15px] text-gray-800 font-semibold">${project.nama_project}.pdf</span>
-                                <a href="/storage/${project.dokumen}" target="_blank" class="text-gray-400 hover:text-[#82C17D] transition-colors">
+                                <span class="text-[15px] text-gray-800 font-semibold">${name}</span>
+                                <a href="/storage/${path}" target="_blank" class="text-gray-400 hover:text-[#82C17D] transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                     </svg>
