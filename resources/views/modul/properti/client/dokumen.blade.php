@@ -103,10 +103,10 @@
                         <h3 class="text-xl font-bold text-gray-800">
                             Daftar Dokumen
                         </h3>
-                        <button @click="open()"
-                                class="bg-[#82C17D] hover:bg-[#6fa86a] text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-lg shadow-green-100 flex items-center gap-2">
+                        <a href="{{ route('client.projects.create') }}"
+                            class="bg-[#82C17D] hover:bg-[#6fa86a] text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-lg shadow-green-100 flex items-center gap-2">
                             <span>+ Tambah</span>
-                        </button>
+                        </a>
                     </div>
 
                     <div class="overflow-x-auto">
@@ -126,18 +126,18 @@
                             <tbody class="text-sm">
                                 @forelse ($projects as $index => $project)
                                     <tr class="border-b hover:bg-green-50/50 cursor-pointer transition" @click="open({
-                                        nama: @js($project->nama_project),
-                                        deskripsi: @js($project->deskripsi),
-                                        contract_date: '{{ $project->contract_date->format('d M Y') }}',
-                                        contact: @js($project->contact_person),
-                                        documents: @js(
-                                            $project->documents->map(fn($d) => [
-                                                'nama' => $d->nama_file,
-                                                'url' => asset($d->file_path),
-                                                'size' => round(filesize(public_path($d->file_path)) / 1024),
-                                            ])
-                                        )
-                                    })">
+                                            nama: @js($project->nama_project),
+                                            deskripsi: @js($project->deskripsi),
+                                            contract_date: '{{ $project->contract_date->format('d M Y') }}',
+                                            contact: @js($project->contact_person),
+                                            documents: @js(
+                                                $project->documents->map(fn($d) => [
+                                                    'nama' => $d->nama_file,
+                                                    'url' => asset($d->file_path),
+                                                    'size' => round(filesize(public_path($d->file_path)) / 1024),
+                                                ])
+                                            )
+                                        })">
                                         <td class="py-4 font-semibold text-gray-600 pl-2">
                                             {{ $index + 1 }}
                                         </td>
@@ -174,26 +174,23 @@
 
         <!-- ================= MODAL ================= -->
         <!-- ================= MODAL ================= -->
-        <div x-show="isOpen" 
-             x-cloak 
-             x-transition 
-             class="fixed inset-0 z-50 flex items-center justify-center px-4"
-             style="display: none;">
+        <div x-show="isOpen" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center px-4"
+            style="display: none;">
             <!-- Backdrop -->
             <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="close()"></div>
 
             <!-- Modal Card -->
             <div class="relative w-full max-w-xl rounded-3xl shadow-2xl bg-white overflow-hidden z-10">
                 <!-- Header -->
-            <div class="bg-[#82C17D] px-6 py-4 flex justify-between items-center">
-                <h3 class="text-white text-lg font-bold">
-                    Detail Proyek
-                </h3>
+                <div class="bg-[#82C17D] px-6 py-4 flex justify-between items-center">
+                    <h3 class="text-white text-lg font-bold">
+                        Detail Proyek
+                    </h3>
 
-                <button @click="close()" class="text-white text-2xl leading-none hover:text-green-100">
-                    &times;
-                </button>
-            </div>
+                    <button @click="close()" class="text-white text-2xl leading-none hover:text-green-100">
+                        &times;
+                    </button>
+                </div>
 
                 <!-- Content -->
                 <div class="p-4 space-y-4 text-sm text-gray-700 max-h-[65vh] overflow-y-auto overflow-x-hidden">
