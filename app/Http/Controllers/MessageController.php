@@ -13,15 +13,27 @@ use Illuminate\Http\Response;
 
 class MessageController extends Controller
 {
+    protected $nodeApi;
+
+    public function __construct(\App\Services\NodeApiService $nodeApi)
+    {
+        $this->nodeApi = $nodeApi;
+    }
+
+    // [INTEGRASI API NODE.JS] Ambil Riwayat Chat
     public function conversation(User $user, Request $request)
     {
         $me = Auth::user();
 
-        $messages = Message::where(function ($q) use ($me, $user) {
-            $q->where('sender_id', $me->id)->where('recipient_id', $user->id);
-        })->orWhere(function ($q) use ($me, $user) {
-            $q->where('sender_id', $user->id)->where('recipient_id', $me->id);
-        })->with('sender')->orderBy('created_at', 'asc')->get();
+        // OLD CODE (Laravel Native)
+        // $messages = Message::where(function ($q) use ($me, $user) {
+        //     $q->where('sender_id', $me->id)->where('recipient_id', $user->id);
+        // })->orWhere(function ($q) use ($me, $user) {
+        //     $q->where('sender_id', $user->id)->where('recipient_id', $me->id);
+        // })->with('sender')->orderBy('created_at', 'asc')->get();
+
+        // NEW CODE (Node API)
+        $messages = $this->nodeApi->getChatHistory($me->id, $user->id);
 
         return response()->json($messages);
     }

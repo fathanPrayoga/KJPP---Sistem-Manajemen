@@ -2,7 +2,8 @@
     <div class="min-h-screen bg-gray-50 pb-12">
         <div class="max-w-7xl mx-auto px-6 py-8">
             <h1 class="mt-8 text-3xl font-bold text-gray-800 mb-8 font-poppins text-[32px]">Selamat Datang,
-                {{ Auth::user()->name }}!</h1>
+                {{ Auth::user()->name }}!
+            </h1>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-[15px]">
                 <a href="{{ route('properti.karyawan') }}" class="group">
@@ -80,24 +81,7 @@
                                         <td class="py-4">Verifikasi dokumen Project {{ $project->client->name ?? 'User' }}
                                         </td>
                                         <td class="py-4">
-                                            @php
-                                                $status = strtolower($project->status ?? 'pending');
-                                                if (in_array($status, ['completed', 'selesai'])) {
-                                                    $badgeClass = 'bg-[#D1E7D0] text-[#4A7C47]';
-                                                    $label = 'Selesai';
-                                                } elseif ($status === 'pending') {
-                                                    $badgeClass = 'bg-yellow-100 text-yellow-800';
-                                                    $label = 'Pending';
-                                                } elseif (in_array($status, ['in_progress', 'proses', 'dalam_proses'])) {
-                                                    $badgeClass = 'bg-blue-100 text-blue-800';
-                                                    $label = 'Dalam Proses';
-                                                } else {
-                                                    $badgeClass = 'bg-gray-100 text-gray-700';
-                                                    $label = ucfirst($status);
-                                                }
-                                            @endphp
-                                            <span
-                                                class="{{ $badgeClass }} px-4 py-1.5 rounded-full text-xs font-bold">{{ $label }}</span>
+                                            <x-status-badge :status="$project->status ?? 'pending'" />
                                         </td>
                                     </tr>
                                 @empty

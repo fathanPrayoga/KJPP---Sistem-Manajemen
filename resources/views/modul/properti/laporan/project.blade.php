@@ -73,10 +73,7 @@
                                         <td class="py-3">{{ $i + 1 }}</td>
                                         <td>{{ $project->nama_project }}</td>
                                         <td>
-                                            <span
-                                                class="px-3 py-1 rounded-full text-xs {{ strtolower($project->status) === 'selesai' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
-                                                {{ ucfirst($project->status) }}
-                                            </span>
+                                            <x-status-badge :status="$project->status" />
                                         </td>
                                         <td>
                                             <div class="flex gap-3">

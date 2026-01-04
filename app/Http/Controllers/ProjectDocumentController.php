@@ -10,10 +10,13 @@ use ZipArchive;
 
 class ProjectDocumentController extends Controller
 {
-    public function __construct()
+    protected $nodeApi;
+
+    public function __construct(\App\Services\NodeApiService $nodeApi)
     {
         // Only karyawan can access these routes
         $this->middleware(['auth', 'verified']);
+        $this->nodeApi = $nodeApi;
     }
 
     // show documents for karyawan view (grouped by project)
@@ -44,7 +47,7 @@ class ProjectDocumentController extends Controller
 
         $zipFile = storage_path('app/temp_' . $project->id . '_' . time() . '.zip');
         $zip = new ZipArchive();
-        
+
         if ($zip->open($zipFile, ZipArchive::CREATE) === true) {
             foreach ($documents as $doc) {
                 $filePath = public_path($doc->file_path);
@@ -60,7 +63,7 @@ class ProjectDocumentController extends Controller
         return redirect()->back()->with('error', 'Gagal membuat file ZIP');
     }
 
-    // verify document (approve/reject)
+    // [INTEGRASI API NODE.JS] Bukti Verifikasi Dokumen - Menghubungi Node.js untuk update status
     public function verify(Request $request, ProjectDocument $document)
     {
         $request->validate([
@@ -68,13 +71,20 @@ class ProjectDocumentController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        $document->status = $request->input('action') === 'approve' ? 'verified' : 'rejected';
-        $document->notes = $request->input('notes');
-        $document->verified_by = Auth::id();
-        $document->verified_at = now();
-        $document->save();
+        $status = $request->input('action') === 'approve' ? 'verified' : 'rejected';
 
-        return redirect()->back()->with('success', 'Dokumen berhasil diverifikasi');
+        // Call Node.js API
+        $result = $this->nodeApi->verifyDocument($document->id, [
+            'status' => $status,
+            'notes' => $request->input('notes'),
+            'verified_by' => Auth::id()
+        ]);
+
+        if ($result) {
+            return redirect()->back()->with('success', 'Dokumen berhasil diverifikasi (via Node.js API)');
+        } else {
+            return redirect()->back()->with('error', 'Gagal verifikasi via Node.js API. Cek koneksi server.');
+        }
     }
 
     // verify project (set all documents to verified)
@@ -95,6 +105,9 @@ class ProjectDocumentController extends Controller
             'verified_by' => Auth::id(),
             'verified_at' => now(),
         ]);
+
+        // [FIX] Update Project status as well to maintain consistency
+        $project->update(['status' => $status]);
 
         return redirect()->back()->with('success', 'Project berhasil diverifikasi');
     }
@@ -117,13 +130,18 @@ class ProjectDocumentController extends Controller
         // Update documents for each selected project
         foreach ($projectIds as $pid) {
             $project = Project::find($pid);
-            if (!$project) continue;
+            if (!$project)
+                continue;
+
             $project->documents()->update([
                 'status' => $status,
                 'notes' => $notes,
                 'verified_by' => Auth::id(),
                 'verified_at' => now(),
             ]);
+
+            // [FIX] Update Project status as well
+            $project->update(['status' => $status]);
         }
 
         return redirect()->back()->with('success', 'Selected projects updated.');

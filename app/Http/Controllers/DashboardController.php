@@ -8,32 +8,34 @@ use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
 {
     public function index()
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    if($user->role === 'karyawan') {
-       
-        $recentProjects = \App\Models\Project::with('client')->latest()->take(5)->get();
+        if ($user->role === 'karyawan') {
 
-        // Data statis sementara
-        $stats = [
-            'properti_count' => 4,
-            'laporan_count' => 4,
-            'pesan_count' => 1
-        ];
+            $recentProjects = \App\Models\Project::with('client')->latest()->take(5)->get();
 
-        
-        return view('dashboards.karyawan.index', compact('recentProjects', 'stats'));
+            // Data statis sementara
+            $stats = [
+                'properti_count' => 4,
+                'laporan_count' => 4,
+                'pesan_count' => 1
+            ];
+
+
+            return view('dashboards.karyawan.index', compact('recentProjects', 'stats'));
+        }
+
+        if ($user->role === 'client') {
+            return view('dashboards.client.index');
+        }
+
+        if ($user->role === 'pekerjaTambahan') {
+            // TODO: Filter by actual assignment if table exists. For now show all 'pending' projects or similar.
+            $assignedProjects = \App\Models\Project::latest()->get();
+            return view('dashboards.pekerjaTambahan.index', compact('assignedProjects'));
+        }
+
+        abort(403, 'Anda tidak memiliki akses ke halaman ini.');
     }
-
-    if ($user->role === 'client') {
-        return view('dashboards.client.index');
-    }
-
-    if ($user->role === 'pekerjaTambahan') {
-        return view('dashboards.pekerjaTambahan.index');
-    }
-
-    abort(403, 'Anda tidak memiliki akses ke halaman ini.');
-}
 }
