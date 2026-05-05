@@ -16,6 +16,7 @@ class Project extends Model
         'contact_person', 
         'deskripsi', 
         'status', 
+        'kategori',
         'asal_instansi',
         'tanggal_mulai', 
         'dokumen',

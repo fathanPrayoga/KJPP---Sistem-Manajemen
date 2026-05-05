@@ -19,6 +19,7 @@ class ProjectController extends Controller
         $project = Project::create([
             'client_id'      => auth()->id(),
             'nama_project'   => $request->nama_project,
+            'kategori'       => $request->kategori,
             'contract_date'  => $request->contract_date,
             'contact_person' => $request->contact_person,
             'deskripsi'      => $request->deskripsi,
@@ -28,12 +29,16 @@ class ProjectController extends Controller
         ]);
 
         if ($request->hasFile('documents')) {
-            foreach ($request->file('documents') as $file) {
+            $categories = $request->input('document_categories', []);
+            foreach ($request->file('documents') as $index => $file) {
                 $path = Storage::disk('public')->putFile('documents', $file);
+
+                $docCategory = isset($categories[$index]) ? $categories[$index] : 'Lainnya';
 
                 $project->documents()->create([
                     'nama_file' => $file->getClientOriginalName(),
                     'file_path' => 'storage/' . $path,
+                    'kategori_dokumen' => $docCategory,
                 ]);
             }
         }

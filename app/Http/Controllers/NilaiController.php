@@ -48,15 +48,11 @@ class NilaiController extends Controller
     public function store(Request $request, $projectId)
     {
         // We can still validate input in Laravel for security
-        // But the actual saving is done by Node.js
+
 
         $data = $request->except(['_token', 'project_id']);
 
-        // If status isn't sent, determine it logic or let Node handle it?
-        // Current logic in PropertiController handled status determination.
-        // We will pass that logic here or send raw data. 
-        // Let's emulate the original logic slightly specifically for 'status_penilaian'
-        // But for pure proxy, better to send what we have.
+
 
         // Check "status logic" existing in previous controller:
         /*
@@ -65,7 +61,7 @@ class NilaiController extends Controller
            else status = sedang;
         */
 
-        // Applying minimal logic here before sending to Node to ensure Node gets correct status
+
         $nilaiFields = [
             'nilai_pasar_final',
             'nilai_tanah',

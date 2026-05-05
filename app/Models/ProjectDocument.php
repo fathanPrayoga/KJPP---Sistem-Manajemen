@@ -10,6 +10,7 @@ class ProjectDocument extends Model
         'project_id',
         'nama_file',
         'file_path',
+        'kategori_dokumen',
         'status',
         'notes',
         'verified_by',

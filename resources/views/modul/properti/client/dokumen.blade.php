@@ -128,6 +128,7 @@
                                     <tr class="border-b hover:bg-green-50/50 cursor-pointer transition" @click="open({
                                             nama: @js($project->nama_project),
                                             deskripsi: @js($project->deskripsi),
+                                            kategori: @js($project->kategori ?? 'Tidak ada kategori'),
                                             contract_date: '{{ $project->contract_date->format('d M Y') }}',
                                             contact: @js($project->contact_person),
                                             documents: @js(
@@ -135,6 +136,7 @@
                                                     'nama' => $d->nama_file,
                                                     'url' => asset($d->file_path),
                                                     'size' => round(filesize(public_path($d->file_path)) / 1024),
+                                                    'kategori' => $d->kategori_dokumen ?? 'Lainnya'
                                                 ])
                                             )
                                         })">
@@ -197,7 +199,10 @@
 
                     <!-- Nama Proyek -->
                     <div>
-                        <p class="font-semibold text-gray-900">Nama Proyek</p>
+                        <div class="flex items-center gap-2 mb-1">
+                            <p class="font-semibold text-gray-900">Nama Proyek</p>
+                            <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide" x-text="project?.kategori"></span>
+                        </div>
                         <p class="break-all whitespace-pre-wrap max-w-full" x-text="project?.nama"></p>
                     </div>
 
@@ -233,16 +238,18 @@
                         <div class="space-y-2">
                             <template x-for="doc in project?.documents" :key="doc.url">
                                 <div
-                                    class="flex items-center justify-between gap-3 bg-gray-50 rounded-xl px-4 py-2 overflow-hidden">
-                                    <div class="flex items-center gap-2 min-w-0">
-                                        <i class="fa fa-file-pdf text-red-500 shrink-0"></i>
-
-                                        <a :href="doc.url" target="_blank"
-                                            class="text-green-600 hover:underline break-all max-w-[75%]"
-                                            x-text="doc.nama"></a>
+                                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-50 rounded-xl px-4 py-3 overflow-hidden">
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider mb-1" x-text="doc.kategori"></span>
+                                        <div class="flex items-center gap-2">
+                                            <i class="fa fa-file-pdf text-red-500 shrink-0"></i>
+                                            <a :href="doc.url" target="_blank"
+                                                class="text-green-600 font-medium hover:underline break-all"
+                                                x-text="doc.nama"></a>
+                                        </div>
                                     </div>
 
-                                    <span class="text-xs text-gray-500 shrink-0" x-text="doc.size + ' KB'">
+                                    <span class="text-xs font-semibold text-gray-400 shrink-0 bg-white px-2 py-1 rounded-md border border-gray-100" x-text="doc.size + ' KB'">
                                     </span>
                                 </div>
                             </template>
