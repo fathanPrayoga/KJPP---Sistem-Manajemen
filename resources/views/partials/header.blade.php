@@ -4,7 +4,7 @@
         <!-- Logo -->
         <div class="flex items-center">
             <a href="{{ route('dashboard') }}">
-                <img src="{{ asset('images/kjpp_logo.png') }}" alt="Logo" class="h-12 w-auto rounded-[10px]">
+                <img src="/images/kjpp_logo.png" alt="Logo" class="h-12 w-auto rounded-[10px]">
             </a>
         </div>
 
@@ -60,18 +60,20 @@
             </button>
 
             <!-- Dropdown Menu -->
-            <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg hidden group-hover:block z-50">
-                <a href="{{ route('profile.edit') }}"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg">
-                    Profile
-                </a>
-                <form method="POST" action="{{ route('logout') }}" class="block">
-                    @csrf
-                    <button type="submit"
-                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg">
-                        Logout
-                    </button>
-                </form>
+            <div class="absolute right-0 top-full pt-2 w-48 hidden group-hover:block z-50">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <a href="{{ route('profile.edit') }}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Profile
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="block">
+                        @csrf
+                        <button type="submit"
+                            class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

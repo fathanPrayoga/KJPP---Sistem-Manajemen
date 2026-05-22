@@ -1,7 +1,7 @@
 <header x-data="{ open: false }" class="bg-[#86c381] shadow-md px-6 py-4">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
         <div class="flex items-center space-x-4">
-            <img src="/logo.png" alt="Logo" class="h-10 w-auto">
+            <img src="{{ asset('images/kjpp_logo.png') }}" alt="Logo" class="h-10 w-auto">
             <nav class="hidden md:flex space-x-8 text-gray-900 font-semibold ml-10">
                 <a href="#" class="hover:text-white transition">Properti</a>
                 <a href="#" class="hover:text-white transition">Laporan</a>

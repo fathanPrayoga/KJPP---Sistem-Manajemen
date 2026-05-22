@@ -65,9 +65,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 bg-white p-8 rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
                     <h3 class="text-xl font-bold mb-6">Daftar Tugas</h3>
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto overflow-y-auto max-h-[400px] pr-2">
                         <table class="w-full text-left">
-                            <thead>
+                            <thead class="sticky top-0 bg-white z-10">
                                 <tr class="text-gray-400 text-sm border-b">
                                     <th class="pb-4 font-semibold">No</th>
                                     <th class="pb-4 font-semibold">Tugas</th>

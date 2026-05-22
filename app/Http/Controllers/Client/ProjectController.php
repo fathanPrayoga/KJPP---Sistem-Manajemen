@@ -28,6 +28,15 @@ class ProjectController extends Controller
             'longitude'      => $request->longitude ?? null,
         ]);
 
+        $request->validate([
+            'documents' => 'required|array',
+            'documents.*' => 'required|file|mimes:pdf|max:5120',
+        ], [
+            'documents.required' => 'Minimal satu dokumen harus diunggah.',
+            'documents.*.mimes' => 'Seluruh file dokumen wajib berformat PDF.',
+            'documents.*.max' => 'Ukuran maksimal setiap file adalah 5MB.'
+        ]);
+
         if ($request->hasFile('documents')) {
             $categories = $request->input('document_categories', []);
             foreach ($request->file('documents') as $index => $file) {
@@ -89,5 +98,29 @@ class ProjectController extends Controller
         }
 
         return redirect()->route('properti.karyawan')->with('success', 'Project updated');
+    }
+
+    public function destroy(Project $project)
+    {
+        if ($project->client_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $status = strtolower($project->status ?? '');
+        if (!in_array($status, ['pending', 'menunggu'])) {
+            return back()->with('error', 'Hanya project berstatus PENDING yang dapat dihapus.');
+        }
+
+        foreach ($project->documents as $doc) {
+            $filePath = str_replace('storage/', '', $doc->file_path);
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
+            }
+        }
+
+        $project->documents()->delete();
+        $project->delete();
+
+        return back()->with('success', 'Project berhasil dibatalkan dan dihapus.');
     }
 }

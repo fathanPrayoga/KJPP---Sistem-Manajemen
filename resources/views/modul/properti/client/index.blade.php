@@ -41,7 +41,7 @@
                                             group-hover:scale-105 transition-transform">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M12 14l9-5-9-5-9 5 9 5z"/>
+                                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                     </svg>
                                 </div>
                                 <div>
@@ -62,7 +62,7 @@
                                             group-hover:scale-105 transition-transform">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M9 12l2 2 4-4"/>
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
                                 </div>
                                 <div>
@@ -109,44 +109,70 @@
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto overflow-y-auto max-h-[400px] pr-2">
                         <table class="w-full text-left">
-                            <thead>
+                            <thead class="sticky top-0 bg-white">
                                 <tr class="text-gray-400 text-sm border-b">
+                                    <th class="pb-4 text-[11px] uppercase w-12 text-center">No.</th>
                                     <th class="pb-4 text-[11px] uppercase">Nama Project</th>
                                     <th class="pb-4 text-[11px] uppercase">Status</th>
-                                    <th class="pb-4 text-[11px] uppercase text-right">
-                                        Update Terakhir
-                                    </th>
+                                    <th class="pb-4 text-[11px] uppercase text-right">Update Terakhir</th>
+                                    <th class="pb-4 text-[11px] uppercase text-right">Aksi</th>
                                 </tr>
                             </thead>
 
                             <tbody class="text-sm">
                                 @forelse ($projects as $project)
                                     <tr class="border-b last:border-0 hover:bg-gray-50/50 transition">
+                                        <td class="py-5 text-center text-gray-400 text-sm font-medium">
+                                            {{ $loop->iteration }}
+                                        </td>
                                         <td class="py-5">
-                                            <div class="font-bold text-gray-800">
+                                            <div class="font-bold text-gray-800 capitalize">
                                                 {{ $project->nama_project }}
-                                            </div>
-
-                                            <div class="text-[11px] text-gray-400 italic">
-                                                ID: #PRO-{{ $project->id }}
                                             </div>
                                         </td>
 
                                         <td class="py-5">
-                                            <span class="font-bold text-blue-600 capitalize">
-                                                {{ $project->status }}
+                                            @php
+                                                $statusBadge = strtolower($project->status ?? '');
+                                            @endphp
+                                            <span class="
+                                                px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider
+                                                @if($statusBadge === 'pending' || $statusBadge === 'menunggu')
+                                                    bg-yellow-100 text-yellow-700
+                                                @elseif($statusBadge === 'selesai' || $statusBadge === 'approved' || $statusBadge === 'verified')
+                                                    bg-green-100 text-green-700
+                                                @elseif($statusBadge === 'rejected' || $statusBadge === 'ditolak')
+                                                    bg-red-100 text-red-700
+                                                @else
+                                                    bg-gray-100 text-gray-700
+                                                @endif
+                                            ">
+                                                {{ $project->status ?? '-' }}
                                             </span>
                                         </td>
 
                                         <td class="py-5 font-semibold text-gray-800 text-right">
                                             {{ $project->updated_at->format('d M, H.i') }}
                                         </td>
+                                        <td class="py-5 text-right">
+                                            @if(strtolower($project->status ?? '') === 'pending' || strtolower($project->status ?? '') === 'menunggu')
+                                                <form action="{{ route('client.projects.destroy', $project->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin membatalkan dan menghapus project ini permanen?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-400 hover:text-red-600 transition p-2 bg-red-50 hover:bg-red-100 rounded-lg shadow-sm" title="Hapus Project">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="3" class="py-16 text-center text-gray-400 italic">
+                                        <td colspan="5" class="py-16 text-center text-gray-400 italic">
                                             Anda belum memiliki pengajuan project.
                                         </td>
                                     </tr>
