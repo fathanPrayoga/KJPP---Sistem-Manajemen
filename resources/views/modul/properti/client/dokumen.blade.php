@@ -105,6 +105,7 @@
                                     <th class="pb-4 font-semibold">Nama Project</th>
                                     <th class="pb-4 font-semibold">Contract Date</th>
                                     <th class="pb-4 font-semibold">Dokumen</th>
+                                    <th class="pb-4 font-semibold text-center">Status</th>
                                     <th class="pb-4 font-semibold text-right">Update Terakhir</th>
                                     <th class="pb-4 font-semibold text-right">Aksi</th>
                                 </tr>
@@ -120,6 +121,8 @@
                                             'kategori' => $project->kategori ?? 'Tidak ada kategori',
                                             'contract_date' => $project->contract_date->format('d M Y'),
                                             'contact' => $project->contact_person,
+                                            'status' => strtolower($project->status ?? 'pending'),
+                                            'notes' => $project->documents->first()?->notes ?? null,
                                             'documents' => $project->documents->map(fn($d) => [
                                                 'nama' => $d->nama_file,
                                                 'url' => asset($d->file_path),
@@ -141,11 +144,31 @@
                                                 {{ $project->documents->count() }} File
                                             </span>
                                         </td>
+                                        <td class="py-4 text-center">
+                                            @php
+                                                $status = strtolower($project->status ?? 'pending');
+                                            @endphp
+                                            @if($status === 'verified')
+                                                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Verified</span>
+                                            @elseif($status === 'rejected')
+                                                <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Rejected</span>
+                                            @else
+                                                <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">Pending</span>
+                                            @endif
+                                        </td>
                                         <td class="py-4 text-right text-gray-600 pr-2">
                                             {{ $project->updated_at->format('d M Y, H:i') }}
                                         </td>
                                         <td class="py-4 text-right" onclick="event.stopPropagation();">
-                                            @if(strtolower($project->status ?? '') === 'pending' || strtolower($project->status ?? '') === 'menunggu')
+                                            @php $status = strtolower($project->status ?? ''); @endphp
+                                            @if($status === 'rejected')
+                                                <a href="{{ route('client.projects.clientEdit', $project->id) }}" class="inline-block text-blue-500 hover:text-blue-700 transition p-2 bg-blue-50 hover:bg-blue-100 rounded-lg shadow-sm mr-1" title="Edit/Revisi Project">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                    </svg>
+                                                </a>
+                                            @endif
+                                            @if(in_array($status, ['pending', 'menunggu', 'rejected']))
                                                 <form action="{{ route('client.projects.destroy', $project->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan dan menghapus pengajuan project ini secara permanen?');">
                                                     @csrf
                                                     @method('DELETE')
@@ -203,6 +226,12 @@
                         <p id="modalNama" class="break-all whitespace-pre-wrap max-w-full"></p>
                     </div>
 
+                    <!-- Status & Catatan -->
+                    <div id="modalStatusContainer" class="rounded-lg p-3 border">
+                        <p class="font-bold text-sm mb-1" id="modalStatusTitle">Status</p>
+                        <p id="modalStatusNotes" class="text-xs"></p>
+                    </div>
+
                     <!-- Deskripsi -->
                     <div>
                         <p class="font-semibold text-gray-900">Deskripsi</p>
@@ -245,6 +274,34 @@
             document.getElementById('modalDeskripsi').textContent = project.deskripsi || '-';
             document.getElementById('modalDate').textContent = project.contract_date || '-';
             document.getElementById('modalContact').textContent = project.contact || '-';
+
+            const statusContainer = document.getElementById('modalStatusContainer');
+            const statusTitle = document.getElementById('modalStatusTitle');
+            const statusNotes = document.getElementById('modalStatusNotes');
+            
+            statusContainer.classList.remove('bg-red-50', 'border-red-200', 'bg-yellow-50', 'border-yellow-200', 'bg-green-50', 'border-green-200');
+            statusTitle.classList.remove('text-red-800', 'text-yellow-800', 'text-green-800');
+            statusNotes.classList.remove('text-red-600', 'text-yellow-600', 'text-green-600');
+
+            if (project.status === 'rejected') {
+                statusContainer.classList.add('bg-red-50', 'border-red-200');
+                statusTitle.textContent = 'Ditolak (Perlu Revisi)';
+                statusTitle.classList.add('text-red-800');
+                statusNotes.textContent = project.notes || 'Tidak ada catatan penolakan.';
+                statusNotes.classList.add('text-red-600');
+            } else if (project.status === 'verified') {
+                statusContainer.classList.add('bg-green-50', 'border-green-200');
+                statusTitle.textContent = 'Terverifikasi';
+                statusTitle.classList.add('text-green-800');
+                statusNotes.textContent = 'Dokumen telah diverifikasi dan disetujui.';
+                statusNotes.classList.add('text-green-600');
+            } else {
+                statusContainer.classList.add('bg-yellow-50', 'border-yellow-200');
+                statusTitle.textContent = 'Menunggu (Pending)';
+                statusTitle.classList.add('text-yellow-800');
+                statusNotes.textContent = 'Dokumen Anda sedang menunggu verifikasi dari Admin/Karyawan.';
+                statusNotes.classList.add('text-yellow-600');
+            }
 
             const docsContainer = document.getElementById('modalDocs');
             docsContainer.innerHTML = ''; // Kosongkan dulu
