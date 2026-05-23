@@ -111,7 +111,7 @@
 
                     <div class="bg-white p-8 rounded-[28px] shadow-[0_18px_30px_rgba(0,0,0,0.04)]">
                         <h3 class="text-xl font-bold mb-4">Project Terbaru</h3>
-                        <div class="space-y-4 text-sm">
+                        <div class="space-y-4 text-sm overflow-y-auto max-h-[180px] pr-2 custom-scrollbar">
                             @foreach($recentProjects as $project)
                                 <div class="flex justify-between items-center border-b border-gray-50 pb-2 last:border-0">
                                     <span

@@ -3,19 +3,7 @@
         $activeMenu = 'dokumen';
     @endphp
 
-    {{-- Alpine Wrapper --}}
-    <div class="min-h-screen bg-gray-50 pb-12" x-data="{
-        isOpen: false,
-        project: null,
-        openModal(project) {
-            this.project = project
-            this.isOpen = true
-        },
-        close() {
-            this.isOpen = false
-            this.project = null
-        }
-    }">
+    <div class="min-h-screen bg-gray-50 pb-12">
 
         <div class="max-w-7xl mx-auto px-6 py-8">
 
@@ -125,7 +113,7 @@
                             <tbody class="text-sm">
                                 @forelse ($projects as $index => $project)
                                     <tr class="border-b hover:bg-green-50/50 cursor-pointer transition" 
-                                        @click="openModal(JSON.parse($el.dataset.project))"
+                                        onclick="openProjectModal(JSON.parse(this.dataset.project))"
                                         data-project="{{ json_encode([
                                             'nama' => $project->nama_project,
                                             'deskripsi' => $project->deskripsi,
@@ -156,7 +144,7 @@
                                         <td class="py-4 text-right text-gray-600 pr-2">
                                             {{ $project->updated_at->format('d M Y, H:i') }}
                                         </td>
-                                        <td class="py-4 text-right" @click.stop>
+                                        <td class="py-4 text-right" onclick="event.stopPropagation();">
                                             @if(strtolower($project->status ?? '') === 'pending' || strtolower($project->status ?? '') === 'menunggu')
                                                 <form action="{{ route('client.projects.destroy', $project->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan dan menghapus pengajuan project ini secara permanen?');">
                                                     @csrf
@@ -185,12 +173,10 @@
             </div>
         </div>
 
-        <!-- ================= MODAL ================= -->
-        <!-- ================= MODAL ================= -->
-        <div x-show="isOpen" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center px-4"
-            style="display: none;">
+        <!-- ================= MODAL (VANILLA JS) ================= -->
+        <div id="projectModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
             <!-- Backdrop -->
-            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="close()"></div>
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeProjectModal()"></div>
 
             <!-- Modal Card -->
             <div class="relative w-full max-w-xl rounded-3xl shadow-2xl bg-white overflow-hidden z-10">
@@ -200,7 +186,7 @@
                         Detail Proyek
                     </h3>
 
-                    <button @click="close()" class="text-white text-2xl leading-none hover:text-green-100">
+                    <button onclick="closeProjectModal()" class="text-white text-2xl leading-none hover:text-green-100">
                         &times;
                     </button>
                 </div>
@@ -212,58 +198,35 @@
                     <div>
                         <div class="flex items-center gap-2 mb-1">
                             <p class="font-semibold text-gray-900">Nama Proyek</p>
-                            <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide" x-text="project?.kategori"></span>
+                            <span id="modalKategori" class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide"></span>
                         </div>
-                        <p class="break-all whitespace-pre-wrap max-w-full" x-text="project?.nama"></p>
+                        <p id="modalNama" class="break-all whitespace-pre-wrap max-w-full"></p>
                     </div>
 
                     <!-- Deskripsi -->
                     <div>
                         <p class="font-semibold text-gray-900">Deskripsi</p>
-                        <p class="break-all whitespace-pre-wrap max-w-full leading-relaxed" x-text="project?.deskripsi">
-                        </p>
+                        <p id="modalDeskripsi" class="break-all whitespace-pre-wrap max-w-full leading-relaxed"></p>
                     </div>
 
                     <!-- Contract Date -->
                     <div>
                         <p class="font-semibold text-gray-900">Contract Date</p>
-                        <p x-text="project?.contract_date"></p>
+                        <p id="modalDate"></p>
                     </div>
 
                     <!-- Contact -->
                     <div>
                         <p class="font-semibold text-gray-900">Contact</p>
-                        <p class="break-all max-w-full" x-text="project?.contact"></p>
+                        <p id="modalContact" class="break-all max-w-full"></p>
                     </div>
 
                     <!-- Dokumen -->
                     <div>
                         <p class="font-semibold text-gray-900 mb-3">Dokumen</p>
 
-                        <template x-if="project?.documents?.length === 0">
-                            <p class="text-gray-400 italic text-sm">
-                                Tidak ada dokumen
-                            </p>
-                        </template>
-
-                        <div class="space-y-2">
-                            <template x-for="doc in project?.documents" :key="doc.url">
-                                <div
-                                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-50 rounded-xl px-4 py-3 overflow-hidden">
-                                    <div class="flex flex-col min-w-0">
-                                        <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider mb-1" x-text="doc.kategori"></span>
-                                        <div class="flex items-center gap-2">
-                                            <i class="fa fa-file-pdf text-red-500 shrink-0"></i>
-                                            <a :href="doc.url" target="_blank"
-                                                class="text-green-600 font-medium hover:underline break-all"
-                                                x-text="doc.nama"></a>
-                                        </div>
-                                    </div>
-
-                                    <span class="text-xs font-semibold text-gray-400 shrink-0 bg-white px-2 py-1 rounded-md border border-gray-100" x-text="doc.size + ' KB'">
-                                    </span>
-                                </div>
-                            </template>
+                        <div id="modalDocs" class="space-y-2">
+                            <!-- JS akan mengisi daftar dokumen disini -->
                         </div>
                     </div>
 
@@ -273,4 +236,46 @@
         </div>
 
     </div>
+
+    <!-- SCRIPT VANILLA JS UNTUK MODAL -->
+    <script>
+        function openProjectModal(project) {
+            document.getElementById('modalNama').textContent = project.nama || '-';
+            document.getElementById('modalKategori').textContent = project.kategori || 'Tidak ada kategori';
+            document.getElementById('modalDeskripsi').textContent = project.deskripsi || '-';
+            document.getElementById('modalDate').textContent = project.contract_date || '-';
+            document.getElementById('modalContact').textContent = project.contact || '-';
+
+            const docsContainer = document.getElementById('modalDocs');
+            docsContainer.innerHTML = ''; // Kosongkan dulu
+
+            if (!project.documents || project.documents.length === 0) {
+                docsContainer.innerHTML = '<p class="text-gray-400 italic text-sm">Tidak ada dokumen</p>';
+            } else {
+                project.documents.forEach(doc => {
+                    docsContainer.innerHTML += `
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-50 rounded-xl px-4 py-3 overflow-hidden">
+                            <div class="flex flex-col min-w-0">
+                                <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider mb-1">${doc.kategori || 'Lainnya'}</span>
+                                <div class="flex items-center gap-2">
+                                    <i class="fa fa-file-pdf text-red-500 shrink-0"></i>
+                                    <a href="${doc.url}" target="_blank"
+                                        class="text-green-600 font-medium hover:underline break-all">
+                                        ${doc.nama || 'Dokumen'}
+                                    </a>
+                                </div>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-400 shrink-0 bg-white px-2 py-1 rounded-md border border-gray-100">${doc.size} KB</span>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('projectModal').classList.remove('hidden');
+        }
+
+        function closeProjectModal() {
+            document.getElementById('projectModal').classList.add('hidden');
+        }
+    </script>
 </x-app-layout>
