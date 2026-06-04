@@ -2,20 +2,21 @@
     <div class="min-h-screen bg-gray-50 pb-12">
         <div class="max-w-7xl mx-auto px-6 py-8">
             <h1 class="mt-8 mb-8 text-[32px] font-poppins font-bold text-gray-800">
-                Tambah Project
+                Revisi Project
             </h1>
 
             <div class="bg-white p-8 rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
-                <form method="POST" action="{{ route('client.projects.store') }}" enctype="multipart/form-data"
+                <form method="POST" action="{{ route('client.projects.clientUpdate', $project->id) }}" enctype="multipart/form-data"
                     class="space-y-6">
                     @csrf
+                    @method('PUT')
 
                     <!-- Nama Project -->
                     <div>
                         <label class="block mb-2 font-medium text-gray-700">
                             Nama Project
                         </label>
-                        <input type="text" name="nama_project" required
+                        <input type="text" name="nama_project" required value="{{ $project->nama_project }}"
                             class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">
                     </div>
 
@@ -24,7 +25,7 @@
                         <label class="block mb-2 font-medium text-gray-700">
                             Contract Date
                         </label>
-                        <input type="date" name="contract_date" required
+                        <input type="date" name="contract_date" required value="{{ $project->contract_date ? \Carbon\Carbon::parse($project->contract_date)->format('Y-m-d') : '' }}"
                             class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">
                     </div>
 
@@ -33,7 +34,7 @@
                         <label class="block mb-2 font-medium text-gray-700">
                             Contact Person
                         </label>
-                        <input type="text" name="contact_person" required
+                        <input type="text" name="contact_person" required value="{{ $project->contact_person }}"
                             class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">
                     </div>
 
@@ -44,11 +45,11 @@
                         </label>
                         <select name="kategori" required
                             class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">
-                            <option value="" disabled selected>Pilih Kategori Project</option>
-                            <option value="Contoh Kategori Project 1">Contoh Kategori Project 1</option>
-                            <option value="Contoh Kategori Project 2">Contoh Kategori Project 2</option>
-                            <option value="Contoh Kategori Project 3">Contoh Kategori Project 3</option>
-                            <option value="Lainnya">Lainnya</option>
+                            <option value="" disabled>Pilih Kategori Project</option>
+                            <option value="Contoh Kategori Project 1" {{ $project->kategori === 'Contoh Kategori Project 1' ? 'selected' : '' }}>Contoh Kategori Project 1</option>
+                            <option value="Contoh Kategori Project 2" {{ $project->kategori === 'Contoh Kategori Project 2' ? 'selected' : '' }}>Contoh Kategori Project 2</option>
+                            <option value="Contoh Kategori Project 3" {{ $project->kategori === 'Contoh Kategori Project 3' ? 'selected' : '' }}>Contoh Kategori Project 3</option>
+                            <option value="Lainnya" {{ $project->kategori === 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                         </select>
                     </div>
 
@@ -58,20 +59,23 @@
                             Deskripsi
                         </label>
                         <textarea name="deskripsi" rows="4"
-                            class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500"></textarea>
+                            class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">{{ $project->deskripsi }}</textarea>
                     </div>
 
                     <!-- Upload Dokumen -->
                     <div>
                         <div class="flex justify-between items-center mb-2">
                             <label class="font-medium text-gray-700">
-                                Upload Dokumen <span class="text-xs text-red-500 font-bold ml-1">(Wajib PDF, Maks. 5MB)</span>
+                                Upload Dokumen Revisi (Opsional) <span class="text-xs text-red-500 font-bold ml-1">(Wajib PDF, Maks. 5MB)</span>
                             </label>
                             <button type="button" id="addDocumentBtn"
                                 class="text-sm text-green-600 hover:text-green-700 font-medium">
                                 + Tambah Dokumen Lain
                             </button>
                         </div>
+                        <p class="text-xs text-orange-600 font-semibold mb-3 bg-orange-50 p-2 rounded-md border border-orange-100">
+                            ⚠️ Perhatian: Jika Anda mengunggah dokumen baru, maka seluruh dokumen lama akan dihapus dan diganti dengan yang baru. Biarkan kosong jika tidak ingin mengubah dokumen.
+                        </p>
 
                         <div id="documentContainer" class="space-y-3">
                             <!-- Default 1 File Input -->
@@ -84,7 +88,7 @@
                                     <option value="Lainnya">Lainnya</option>
                                 </select>
 
-                                <input type="file" name="documents[]" accept="application/pdf" required class="w-full sm:w-2/3 text-sm text-gray-600
+                                <input type="file" name="documents[]" accept="application/pdf" class="w-full sm:w-2/3 text-sm text-gray-600
                                            file:mr-4 file:rounded-full file:border-0
                                            file:bg-green-50 file:px-4 file:py-2
                                            file:text-green-700 hover:file:bg-green-100">
@@ -161,7 +165,7 @@
                     <!-- Submit -->
                     <div class="pt-4 text-right">
                         <x-primary-button>
-                            Kirim Dokumen
+                            Simpan Perubahan & Ajukan Ulang
                         </x-primary-button>
                     </div>
                 </form>

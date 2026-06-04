@@ -64,7 +64,7 @@
 
     <div class="hidden md:flex md:w-1/2 bg-[#86c381] items-center justify-center p-12 relative">
         <div class="text-white text-right z-10">
-            <img src="{{ asset('images/kjpp_logo.png') }}" alt="kjpp" class="w-full max-w-sm mx-auto">
+            <img src="/images/kjpp_logo.png" alt="kjpp" class="w-full max-w-sm mx-auto">
         </div>
     </div>
 </x-guest-layout>

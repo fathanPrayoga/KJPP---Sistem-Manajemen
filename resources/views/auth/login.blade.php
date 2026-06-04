@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="hidden md:flex md:w-1/2 items-center justify-center p-12">
-        <img src="{{ asset('images/kjpp_logo.png') }}" alt="KJPP Logo" class="w-72 h-auto object-contain">
+        <img src="/images/kjpp_logo.png" alt="KJPP Logo" class="w-72 h-auto object-contain">
     </div>
 
     <div class="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center border-l border-gray-100">

@@ -44,6 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('client')->name('client.')->group(function () {
         Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
         Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
+        Route::get('/projects/{project}/edit-client', [ProjectController::class, 'clientEdit'])->name('projects.clientEdit');
+        Route::put('/projects/{project}/update-client', [ProjectController::class, 'clientUpdate'])->name('projects.clientUpdate');
+        Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
     });
 
     // [LARAVEL NATIVE] ===== PROFIL =====
@@ -52,9 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // [LARAVEL NATIVE] ===== SISTEM CHAT (API Node.js Tersedia untuk Pengembangan) =====
-    Route::get('/chats', function () {
-        return view('chats.index');
-    })->name('chats.index');
+    Route::get('/chats', \App\Livewire\Chat::class)->name('chats.index');
     Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
     Route::get('/messages/conversation/{user}', [\App\Http\Controllers\MessageController::class, 'conversation'])->name('messages.conversation');
     Route::post('/messages', [\App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');

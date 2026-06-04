@@ -40,3 +40,22 @@
   border-right: 8px solid #ffffff;
   border-bottom: 8px solid transparent;
 }
+
+/* Global Minimalist Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; /* Tailwind slate-300 */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8; /* Tailwind slate-400 */
+}

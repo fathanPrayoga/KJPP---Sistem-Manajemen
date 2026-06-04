@@ -35,7 +35,7 @@
                         </div>
                     @else
                         <table class="w-full text-sm">
-                            <thead class="border-b text-gray-500">
+                            <thead class="border-b text-gray-500 sticky top-0 bg-white z-10">
                                 <tr>
                                     <th class="py-2 text-left w-16">No</th>
                                     <th class="text-left">Laporan</th>

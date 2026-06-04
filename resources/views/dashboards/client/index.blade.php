@@ -66,28 +66,51 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 bg-white p-8 rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
-                    <h3 class="text-xl font-bold mb-6">Project Saya</h3>
-                    <div class="overflow-x-auto">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">Project Saya</h3>
+                        <a href="{{ route('client.projects.create') }}"
+                            class="bg-[#82C17D] hover:bg-[#6fa86a] text-white px-4 py-2 rounded-lg text-[13px] font-semibold transition shadow-lg shadow-green-100 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                            <span>Tambah Project</span>
+                        </a>
+                    </div>
+                    <div class="overflow-x-auto overflow-y-auto max-h-[400px] pr-2">
                         <table class="w-full text-left">
-                            <thead>
+                            <thead class="sticky top-0 bg-white z-10">
                                 <tr class="text-gray-400 text-sm border-b">
-                                    <th class="pb-4 font-semibold">No</th>
+                                    <th class="pb-4 font-semibold w-12 text-center">No</th>
                                     <th class="pb-4 font-semibold">Nama Project</th>
                                     <th class="pb-4 font-semibold">Status</th>
+                                    <th class="pb-4 font-semibold text-right">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="text-sm">
                                 @forelse($projects as $index => $project)
                                     <tr class="border-b last:border-0">
-                                        <td class="py-4 font-medium">{{ $index + 1 }}</td>
-                                        <td class="py-4">{{ $project->nama_project ?? ($project->name ?? 'Project') }}</td>
+                                        <td class="py-4 font-medium text-gray-400 text-center">{{ $index + 1 }}</td>
+                                        <td class="py-4 font-bold text-gray-800 capitalize">{{ $project->nama_project ?? ($project->name ?? 'Project') }}</td>
                                         <td class="py-4">
                                             <x-status-badge :status="$project->status ?? 'pending'" />
+                                        </td>
+                                        <td class="py-4 text-right">
+                                            @if(strtolower($project->status ?? '') === 'pending' || strtolower($project->status ?? '') === 'menunggu')
+                                                <form action="{{ route('client.projects.destroy', $project->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan dan menghapus pengajuan project ini secara permanen?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-500 hover:text-red-700 transition p-2 bg-red-50 hover:bg-red-100 rounded-lg shadow-sm" title="Batalkan & Hapus">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="3" class="text-center py-4 text-gray-400 italic">Belum ada project.
+                                        <td colspan="4" class="text-center py-4 text-gray-400 italic">Belum ada project.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -113,17 +136,23 @@
 
                     <div class="bg-white p-8 rounded-[28px] shadow-[0_18px_30px_rgba(0,0,0,0.04)]">
                         <h3 class="text-xl font-bold mb-4">Recent Activity</h3>
-                        <div class="space-y-4 text-sm">
-                            @foreach($projects as $project)
-                                <div class="flex justify-between items-center border-b border-gray-50 pb-2 last:border-0">
-                                    <span
-                                        class="text-gray-600 font-medium truncate w-20">{{ $project->nama_project ?? ($project->name ?? 'Project') }}</span>
-                                    <span
-                                        class="text-gray-400 font-bold px-2">{{ \Illuminate\Support\Str::limit($project->deskripsi ?? '', 40) }}</span>
-                                    <span
-                                        class="font-semibold text-gray-800">{{ $project->created_at->format('d M') }}</span>
+                        <div class="space-y-4 text-sm overflow-y-auto max-h-[300px] pr-2">
+                            @forelse($projects as $project)
+                                <div class="flex items-start gap-3 border-b border-gray-50 pb-3 last:border-0">
+                                    <div class="bg-green-50 p-2 rounded-full text-[#82C17D] shrink-0 mt-0.5 shadow-sm">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-gray-800 truncate">Menambahkan Project Baru</p>
+                                        <p class="text-xs text-gray-400 capitalize truncate mt-0.5">{{ $project->nama_project ?? ($project->name ?? 'Project') }}</p>
+                                    </div>
+                                    <span class="text-xs font-bold text-gray-400 shrink-0">{{ $project->created_at->format('d M') }}</span>
                                 </div>
-                            @endforeach
+                            @empty
+                                <p class="text-sm text-gray-400 italic text-center py-4">Belum ada aktivitas</p>
+                            @endforelse
                         </div>
                     </div>
                 </div>
