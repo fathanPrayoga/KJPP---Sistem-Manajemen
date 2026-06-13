@@ -3,99 +3,87 @@
         <div class="max-w-7xl mx-auto px-6 py-8">
             <h1 class="mt-8 text-3xl font-bold text-gray-800 mb-8 font-poppins text-[32px]">Laporan</h1>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-1 space-y-6">
-                    <a href="{{ route('laporan.project') }}" class="block group">
-                        <div
-                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] 
-                                   hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] 
-                                   transition-all cursor-pointer border 
-                                   {{ request()->routeIs('laporan.project') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
-                            <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg 
-                                            group-hover:scale-105 transition-transform">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5h6m2 0h1a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h1m2-2h6a2 2 0 012 2v2H7V5a2 2 0 012-2z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-gray-800 text-lg">Project</h3>
-                                    <p class="text-gray-400 text-sm">Laporan</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
+            <!-- Top Tabs Navigation -->
+            <div class="flex space-x-6 border-b border-gray-200 mb-8">
+                <a href="{{ route('laporan.project') }}" 
+                   class="pb-3 px-2 font-bold text-sm border-b-2 transition-colors {{ request()->routeIs('laporan.project') ? 'border-[#82C17D] text-[#82C17D]' : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-300' }}">
+                   Laporan Project
+                </a>
+                <a href="{{ route('laporan.tahunan') }}" 
+                   class="pb-3 px-2 font-bold text-sm border-b-2 transition-colors {{ request()->routeIs('laporan.tahunan') ? 'border-[#82C17D] text-[#82C17D]' : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-300' }}">
+                   Laporan Tahunan
+                </a>
+            </div>
 
-                    <a href="{{ route('laporan.tahunan') }}" class="block group">
-                        <div
-                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] 
-                                   hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] 
-                                   transition-all cursor-pointer border 
-                                   {{ request()->routeIs('laporan.tahunan') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
-                            <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg 
-                                            group-hover:scale-105 transition-transform">
-                                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3M5 11h14M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-gray-800 text-lg">Tahunan</h3>
-                                    <p class="text-gray-400 text-sm">Laporan</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
+            <!-- Content Area -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-800">Daftar Project</h3>
                 </div>
 
-                <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow">
-                    <h3 class="text-xl font-bold mb-6">List Project</h3>
-
                     @if($projects->isEmpty())
-                        <div class="text-center text-gray-400 py-10">
-                            Belum ada project
+                        <div class="flex flex-col items-center justify-center py-10 px-4 text-center bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
+                            <svg class="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                            <p class="text-sm text-gray-500">Belum ada project.</p>
                         </div>
                     @else
-                        <table class="w-full text-sm">
-                            <thead class="border-b text-gray-500 sticky top-0 bg-white z-10">
-                                <tr>
-                                    <th class="py-2 text-left">No</th>
-                                    <th class="text-left">Project</th>
-                                    <th class="text-left">Status</th>
-                                    <th class="text-left">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($projects as $i => $project)
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-3">{{ $i + 1 }}</td>
-                                        <td>{{ $project->nama_project }}</td>
-                                        <td>
-                                            <x-status-badge :status="$project->status" />
-                                        </td>
-                                        <td>
-                                            <div class="flex gap-3">
-                                                <button onclick="openModal({{ $project->id }})"
-                                                    class="text-[#82C17D] font-medium hover:underline">
-                                                    Edit
-                                                </button>
-                                                <button onclick="confirmDelete({{ $project->id }})"
-                                                    class="text-red-500 font-medium hover:underline">
-                                                    Hapus
-                                                </button>
-                                                <form id="delete-form-{{ $project->id }}"
-                                                    action="{{ route('laporan.project.delete', $project->id) }}" method="POST"
-                                                    class="hidden">
-                                                    @csrf @method('DELETE')
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                        <div class="space-y-3">
+                            @foreach($projects as $i => $project)
+                                @php
+                                    $statusBadge = strtolower($project->status ?? '');
+                                    $statusColor = 'bg-gray-100 text-gray-700';
+                                    $canGeneratePdf = false;
+                                    if ($statusBadge === 'pending' || $statusBadge === 'menunggu') $statusColor = 'bg-yellow-100 text-yellow-700';
+                                    elseif ($statusBadge === 'selesai' || $statusBadge === 'approved' || $statusBadge === 'verified') {
+                                        $statusColor = 'bg-green-100 text-green-700';
+                                        $canGeneratePdf = true;
+                                    }
+                                    elseif ($statusBadge === 'rejected' || $statusBadge === 'ditolak') $statusColor = 'bg-red-100 text-red-700';
+                                @endphp
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50/50 transition bg-white group gap-4">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 text-sm font-bold">
+                                            {{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-800 text-sm mb-0.5 capitalize">{{ $project->nama_project }}</h4>
+                                            <p class="text-xs text-gray-500 font-medium">Diupdate: {{ $project->updated_at->format('d M Y, H.i') }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center shrink-0 ml-auto">
+                                        <div class="w-[110px] min-w-[110px] shrink-0 flex justify-center pr-3">
+                                            <span class="px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider {{ $statusColor }}">
+                                                {{ $project->status ?? '-' }}
+                                            </span>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-end gap-2 border-l border-gray-200 pl-5 w-[170px] min-w-[170px] shrink-0">
+                                            @if($canGeneratePdf)
+                                                <a href="{{ route('laporan.project.pdf', $project->id) }}" target="_blank"
+                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 border-2 border-[#82C17D] text-[#82C17D] hover:bg-[#82C17D] hover:text-white rounded-lg text-xs font-bold transition-colors"
+                                                    title="Generate & Download PDF">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
+                                                    PDF
+                                                </a>
+                                            @endif
+                                            
+                                            <button onclick="openModal({{ $project->id }})"
+                                                class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors" title="Upload Laporan Manual">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                            </button>
+                                            <button onclick="confirmDelete({{ $project->id }})"
+                                                class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors" title="Hapus Laporan">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            </button>
+                                            <form id="delete-form-{{ $project->id }}" action="{{ route('laporan.project.delete', $project->id) }}" method="POST" class="hidden">
+                                                @csrf @method('DELETE')
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     @endif
                 </div>
             </div>
@@ -103,8 +91,8 @@
     </div>
 
     <!-- MODAL -->
-    <div id="laporanModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-xl mx-auto">
+    <div id="laporanModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl mx-4">
 
             <!-- HEADER -->
             <div class="bg-[#82C17D] px-6 py-4 flex justify-between text-white">
@@ -226,7 +214,7 @@
                 })
                 .catch(err => {
                     console.error('Error fetching data:', err);
-                    alert('Gagal mengambil data project');
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Gagal mengambil data project.' });
                 });
         }
 

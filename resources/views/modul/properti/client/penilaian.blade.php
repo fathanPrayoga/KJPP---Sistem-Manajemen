@@ -75,68 +75,48 @@
                 <div class="lg:col-span-2 bg-white p-8 rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
                     <h3 class="text-xl font-bold mb-6">Terbaru</h3>
                     <div class="overflow-x-auto overflow-y-auto max-h-[400px] pr-2">
-                        <table class="w-full text-left">
-                            <thead class="sticky top-0 bg-white z-10">
-                                <tr class="text-gray-400 text-sm border-b">
-                                    <th class="pb-4 font-semibold w-12 text-center">No</th>
-                                    <th class="pb-4 font-semibold">Nama Project</th>
-                                    <th class="pb-4 font-semibold">Waktu</th>
-                                    <th class="pb-4 font-semibold">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-sm">
-                                {{-- SAFETY CHECK: Ensure $projects exists before looping --}}
-                                @if(isset($projects))
-                                    @forelse($projects as $project)
-                                        <tr class="border-b last:border-0 hover:bg-gray-50 transition cursor-pointer"
-                                            onclick="openNilaiModal({{ $project->id }}, {{ Js::from($project->nama_project) }}, {{ Js::from($project->deskripsi) }}, {{ Js::from($project->contact_person) }})">
-
-                                            <td class="py-4 text-gray-400 text-center font-medium">{{ $loop->iteration }}</td>
-
-                                            <td class="py-4 text-gray-600 font-bold capitalize">
-                                                {{ $project->nama_project ?? '-' }}
-                                            </td>
-
-                                            <td class="py-4 font-semibold text-gray-800">
-                                                {{ optional($project->created_at)->format('H.i') ?? '-' }}
-                                            </td>
-
-                                            <td class="py-4">
-                                                @php
-                                                    $nilaiStatus = 'belum dinilai';
-                                                    if ($project->nilai) {
-                                                        $nilaiStatus = $project->nilai->status_penilaian?->value ?? 'belum dinilai';
-                                                    }
-                                                @endphp
-                                                <span class="
-                                                        px-3 py-1 rounded-full text-xs font-semibold
-                                                        @if($nilaiStatus === 'belum dinilai')
-                                                            bg-red-100 text-red-700
-                                                        @elseif($nilaiStatus === 'sedang dinilai')
-                                                            bg-yellow-100 text-yellow-700
-                                                        @elseif($nilaiStatus === 'sudah dinilai')
-                                                            bg-green-100 text-green-700
-                                                        @endif
-                                                    ">
-                                                    {{ strtoupper(str_replace('_', ' ', $nilaiStatus)) }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center py-8 text-gray-400 italic">Belum ada project.
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                @else
-                                    {{-- Fallback if variable is missing entirely --}}
-                                    <tr>
-                                        <td colspan="3" class="text-center py-8 text-red-400 italic">Error: Data project
-                                            tidak ditemukan.</td>
-                                    </tr>
-                                @endif
-                            </tbody>
-                        </table>
+                        <div class="space-y-3">
+                            @if(isset($projects))
+                                @forelse($projects as $project)
+                                    @php
+                                        $nilaiStatus = 'belum dinilai';
+                                        if ($project->nilai) {
+                                            $nilaiStatus = $project->nilai->status_penilaian?->value ?? 'belum dinilai';
+                                        }
+                                        $statusColor = 'bg-red-100 text-red-700';
+                                        if ($nilaiStatus === 'sedang dinilai') $statusColor = 'bg-yellow-100 text-yellow-700';
+                                        elseif ($nilaiStatus === 'sudah dinilai') $statusColor = 'bg-green-100 text-green-700';
+                                    @endphp
+                                    <div class="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-[#82C17D]/30 transition bg-white group cursor-pointer"
+                                        onclick="openNilaiModal({{ $project->id }}, {{ Js::from($project->nama_project) }}, {{ Js::from($project->deskripsi) }}, {{ Js::from($project->contact_person) }})">
+                                        
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-xl bg-gray-50 group-hover:bg-green-50 flex items-center justify-center text-gray-400 group-hover:text-[#82C17D] transition hidden md:flex">
+                                                <span class="font-bold text-sm">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-gray-800 text-sm mb-0.5 capitalize">{{ $project->nama_project ?? '-' }}</h4>
+                                                <p class="text-xs text-gray-500 font-medium">Jam: {{ optional($project->created_at)->format('H.i') ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $statusColor }}">
+                                                {{ strtoupper(str_replace('_', ' ', $nilaiStatus)) }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="flex flex-col items-center justify-center py-10 px-4 text-center bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
+                                        <svg class="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                        <p class="text-sm text-gray-500">Belum ada project.</p>
+                                    </div>
+                                @endforelse
+                            @else
+                                <div class="flex flex-col items-center justify-center py-10 px-4 text-center bg-red-50 rounded-2xl border border-red-100 border-dashed">
+                                    <p class="text-sm text-red-500 font-bold">Error: Data project tidak ditemukan.</p>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>

@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\Storage;
 
 class SurveyController extends Controller
 {
-    protected $nodeApi;
-
-    public function __construct(\App\Services\NodeApiService $nodeApi)
-    {
-        $this->nodeApi = $nodeApi;
-    }
 
     /**
      * Get all physical elements for a specific project.
@@ -68,24 +62,21 @@ class SurveyController extends Controller
     {
         $request->validate([
             'status' => 'required|in:verified,rejected', // verified = Selesai/Approved
+            'notes' => 'nullable|string',
         ]);
 
-        // Call Node.js API
-        $result = $this->nodeApi->verifyPhysicalElement($id, [
-            'status' => $request->status
+        // Update local database
+        $element = ProjectPhysicalElement::findOrFail($id);
+        $element->update([
+            'status' => $request->status,
+            'notes' => $request->notes,
         ]);
 
-        if ($result) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Status berhasil diperbarui (via Node.js API).',
-                'data' => $result
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal verifikasi via Node.js API.',
-            ], 500);
-        }
+        // Status sudah berhasil diperbarui di database lokal
+        return response()->json([
+            'success' => true,
+            'message' => 'Status berhasil diperbarui.',
+            'node_sync' => false // Node sync removed
+        ]);
     }
 }

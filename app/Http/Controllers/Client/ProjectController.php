@@ -98,15 +98,7 @@ class ProjectController extends Controller
                 'documents.*.max' => 'Ukuran maksimal setiap file adalah 5MB.'
             ]);
 
-            // Delete old documents
-            foreach ($project->documents as $doc) {
-                $filePath = str_replace('storage/', '', $doc->file_path);
-                if (Storage::disk('public')->exists($filePath)) {
-                    Storage::disk('public')->delete($filePath);
-                }
-            }
-            $project->documents()->delete();
-
+            // Tidak menghapus dokumen lama agar menjadi riwayat (history) revisi
             // Store new documents
             $categories = $request->input('document_categories', []);
             foreach ($request->file('documents') as $index => $file) {

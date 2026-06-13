@@ -10,12 +10,12 @@
 
                     <div class="mb-4">
                         <label class="block mb-2 font-medium text-gray-700">Nama Project</label>
-                        <input type="text" name="nama_project" value="{{ old('nama_project', $project->nama_project) }}" required class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">
+                        <input type="text" name="nama_project" value="{{ old('nama_project', $project->nama_project) }}" required class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
                     </div>
 
                     <div class="mb-4">
                         <label class="block mb-2 font-medium text-gray-700">Deskripsi</label>
-                        <textarea name="deskripsi" rows="4" class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">{{ old('deskripsi', $project->deskripsi) }}</textarea>
+                        <textarea name="deskripsi" rows="4" class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">{{ old('deskripsi', $project->deskripsi) }}</textarea>
                     </div>
 
                     <div class="mb-4">
@@ -30,7 +30,7 @@
                     <div class="mb-4">
                         <label class="block mb-2 font-medium text-gray-700">Lokasi / Alamat (opsional)</label>
                         <div class="flex gap-2">
-                            <input type="text" id="address-input" name="address" value="{{ old('address') }}" placeholder="Cari alamat (contoh: Jalan, Kota)" class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">
+                            <input type="text" id="address-input" name="address" value="{{ old('address') }}" placeholder="Cari alamat (contoh: Jalan, Kota)" class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
                             <button type="button" id="fetch-location" class="inline-flex items-center px-4 py-2  bg-gray-100 text-gray-700 rounded-md text-sm">Cari</button>
                         </div>
                         <p id="location-message" class="mt-2 text-sm text-gray-600"></p>
@@ -38,11 +38,11 @@
                         <div class="mt-3 grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block mb-1 text-sm text-gray-600">Latitude</label>
-                                <input type="text" id="latitude" name="latitude" value="{{ old('latitude', $project->latitude ?? '') }}" placeholder="-6.2000000" class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500 text-sm">
+                                <input type="text" id="latitude" name="latitude" value="{{ old('latitude', $project->latitude ?? '') }}" placeholder="-6.2000000" class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D] text-sm">
                             </div>
                             <div>
                                 <label class="block mb-1 text-sm text-gray-600">Longitude</label>
-                                <input type="text" id="longitude" name="longitude" value="{{ old('longitude', $project->longitude ?? '') }}" placeholder="106.8166667" class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500 text-sm">
+                                <input type="text" id="longitude" name="longitude" value="{{ old('longitude', $project->longitude ?? '') }}" placeholder="106.8166667" class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D] text-sm">
                             </div>
                         </div>
                     </div>

@@ -98,78 +98,71 @@
                     </div>
 
                     <div class="overflow-x-auto overflow-y-auto max-h-[400px] pr-2">
-                        <table class="w-full text-left">
-                            <thead class="sticky top-0 bg-white z-10">
-                                <tr class="text-gray-400 text-sm border-b">
-                                    <th class="pb-4 font-semibold w-12 text-center">No</th>
-                                    <th class="pb-4 font-semibold">Nama Project</th>
-                                    <th class="pb-4 font-semibold">Contract Date</th>
-                                    <th class="pb-4 font-semibold">Dokumen</th>
-                                    <th class="pb-4 font-semibold text-center">Status</th>
-                                    <th class="pb-4 font-semibold text-right">Update Terakhir</th>
-                                    <th class="pb-4 font-semibold text-right">Aksi</th>
-                                </tr>
-                            </thead>
-
-                            <tbody class="text-sm">
-                                @forelse ($projects as $index => $project)
-                                    <tr class="border-b hover:bg-green-50/50 cursor-pointer transition" 
-                                        onclick="openProjectModal(JSON.parse(this.dataset.project))"
-                                        data-project="{{ json_encode([
-                                            'nama' => $project->nama_project,
-                                            'deskripsi' => $project->deskripsi,
-                                            'kategori' => $project->kategori ?? 'Tidak ada kategori',
-                                            'contract_date' => $project->contract_date->format('d M Y'),
-                                            'contact' => $project->contact_person,
-                                            'status' => strtolower($project->status ?? 'pending'),
-                                            'notes' => $project->documents->first()?->notes ?? null,
-                                            'documents' => $project->documents->map(fn($d) => [
-                                                'nama' => $d->nama_file,
-                                                'url' => asset($d->file_path),
-                                                'size' => file_exists(public_path($d->file_path)) ? round(filesize(public_path($d->file_path)) / 1024) : 0,
-                                                'kategori' => $d->kategori_dokumen ?? 'Lainnya'
-                                            ])->toArray()
-                                        ]) }}">
-                                        <td class="py-4 font-semibold text-gray-500 text-center">
-                                            {{ $index + 1 }}
-                                        </td>
-                                        <td class="py-4 font-bold text-gray-800 capitalize">
-                                            {{ $project->nama_project }}
-                                        </td>
-                                        <td class="py-4 text-gray-600">
-                                            {{ $project->contract_date->format('d M Y') }}
-                                        </td>
-                                        <td class="py-4 font-medium">
-                                            <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold border border-gray-200 shadow-sm">
-                                                {{ $project->documents->count() }} File
-                                            </span>
-                                        </td>
-                                        <td class="py-4 text-center">
-                                            @php
-                                                $status = strtolower($project->status ?? 'pending');
-                                            @endphp
-                                            @if($status === 'verified')
-                                                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Verified</span>
-                                            @elseif($status === 'rejected')
-                                                <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Rejected</span>
-                                            @else
-                                                <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">Pending</span>
-                                            @endif
-                                        </td>
-                                        <td class="py-4 text-right text-gray-600 pr-2">
-                                            {{ $project->updated_at->format('d M Y, H:i') }}
-                                        </td>
-                                        <td class="py-4 text-right" onclick="event.stopPropagation();">
-                                            @php $status = strtolower($project->status ?? ''); @endphp
+                        <div class="space-y-3">
+                            @forelse ($projects as $index => $project)
+                                @php
+                                    $status = strtolower($project->status ?? 'pending');
+                                    $statusColor = 'bg-yellow-100 text-yellow-700';
+                                    $statusText = 'Pending';
+                                    if ($status === 'verified') {
+                                        $statusColor = 'bg-green-100 text-green-700';
+                                        $statusText = 'Verified';
+                                    } elseif ($status === 'rejected') {
+                                        $statusColor = 'bg-red-100 text-red-700';
+                                        $statusText = 'Rejected';
+                                    }
+                                @endphp
+                                <div class="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-[#82C17D]/30 transition bg-white group cursor-pointer"
+                                    onclick="openProjectModal(JSON.parse(this.dataset.project))"
+                                    data-project="{{ json_encode([
+                                        'nama' => $project->nama_project,
+                                        'deskripsi' => $project->deskripsi,
+                                        'kategori' => $project->kategori ?? 'Tidak ada kategori',
+                                        'contract_date' => $project->contract_date->format('d M Y'),
+                                        'contact' => $project->contact_person,
+                                        'status' => $status,
+                                        'notes' => $project->documents->first()?->notes ?? null,
+                                        'documents' => $project->documents->map(fn($d) => [
+                                            'nama' => $d->nama_file,
+                                            'url' => asset($d->file_path),
+                                            'size' => file_exists(public_path($d->file_path)) ? round(filesize(public_path($d->file_path)) / 1024) : 0,
+                                            'kategori' => $d->kategori_dokumen ?? 'Lainnya',
+                                            'date' => $d->created_at->format('d M Y, H:i')
+                                        ])->toArray(),
+                                        'laporan_final' => $project->dokumen ? asset('storage/' . $project->dokumen) : null
+                                    ]) }}">
+                                    
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-xl bg-gray-50 group-hover:bg-green-50 flex items-center justify-center text-gray-400 group-hover:text-[#82C17D] transition hidden md:flex">
+                                            <span class="font-bold text-sm">{{ $index + 1 }}</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-800 text-sm mb-0.5 capitalize">{{ $project->nama_project }}</h4>
+                                            <p class="text-xs text-gray-500 font-medium">Contract: {{ $project->contract_date->format('d M Y') }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-4">
+                                        <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-[11px] font-bold border border-gray-200 shadow-sm hidden sm:block">
+                                            {{ $project->documents->count() }} File
+                                        </span>
+                                        <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $statusColor }}">
+                                            {{ $statusText }}
+                                        </span>
+                                        <div class="text-right hidden lg:block mr-2 text-xs text-gray-400 font-medium">
+                                            <div class="uppercase tracking-wider text-[10px] mb-0.5">Update</div>
+                                            <div>{{ $project->updated_at->format('d M Y, H:i') }}</div>
+                                        </div>
+                                        <div class="flex gap-1" onclick="event.stopPropagation();">
                                             @if($status === 'rejected')
-                                                <a href="{{ route('client.projects.clientEdit', $project->id) }}" class="inline-block text-blue-500 hover:text-blue-700 transition p-2 bg-blue-50 hover:bg-blue-100 rounded-lg shadow-sm mr-1" title="Edit/Revisi Project">
+                                                <a href="{{ route('client.projects.clientEdit', $project->id) }}" class="inline-block text-blue-500 hover:text-blue-700 transition p-2 bg-blue-50 hover:bg-blue-100 rounded-lg shadow-sm" title="Edit/Revisi Project">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                                     </svg>
                                                 </a>
                                             @endif
                                             @if(in_array($status, ['pending', 'menunggu', 'rejected']))
-                                                <form action="{{ route('client.projects.destroy', $project->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan dan menghapus pengajuan project ini secara permanen?');">
+                                                <form action="{{ route('client.projects.destroy', $project->id) }}" method="POST" class="inline-block" onsubmit="confirmDelete(event, this, 'Apakah Anda yakin ingin membatalkan dan menghapus pengajuan project ini secara permanen?');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-500 hover:text-red-700 transition p-2 bg-red-50 hover:bg-red-100 rounded-lg shadow-sm" title="Batalkan & Hapus">
@@ -179,17 +172,16 @@
                                                     </button>
                                                 </form>
                                             @endif
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="py-16 text-center text-gray-400 italic">
-                                            Belum ada data dokumen
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="flex flex-col items-center justify-center py-10 px-4 text-center bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
+                                    <svg class="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                    <p class="text-sm text-gray-500">Belum ada data dokumen.</p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
 
                 </div>
@@ -321,11 +313,31 @@
                                         ${doc.nama || 'Dokumen'}
                                     </a>
                                 </div>
+                                <span class="text-[10px] text-gray-400 mt-1"><i class="fa fa-clock mr-1"></i> ${doc.date}</span>
                             </div>
                             <span class="text-xs font-semibold text-gray-400 shrink-0 bg-white px-2 py-1 rounded-md border border-gray-100">${doc.size} KB</span>
                         </div>
                     `;
                 });
+            }
+
+            // Tambahkan Laporan Final jika ada
+            if (project.laporan_final) {
+                docsContainer.innerHTML += `
+                    <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 overflow-hidden">
+                        <div class="flex flex-col min-w-0">
+                            <span class="text-[10px] uppercase font-bold text-blue-500 tracking-wider mb-1">LAPORAN FINAL</span>
+                            <div class="flex items-center gap-2">
+                                <i class="fa fa-file-pdf text-red-500 shrink-0"></i>
+                                <a href="${project.laporan_final}" target="_blank"
+                                    class="text-blue-700 font-bold hover:underline break-all">
+                                    Unduh Laporan Penilaian
+                                </a>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold text-white shrink-0 bg-blue-500 px-3 py-1 rounded-full shadow-sm">Tersedia</span>
+                    </div>
+                `;
             }
 
             document.getElementById('projectModal').classList.remove('hidden');

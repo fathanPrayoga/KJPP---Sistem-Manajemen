@@ -3,71 +3,145 @@
         <div class="max-w-7xl mx-auto px-6 py-8">
             <h1 class="mt-8 text-3xl font-bold text-gray-800 mb-8 font-poppins text-[32px]">Laporan Tahunan</h1>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Left Side: 2 Cards -->
-                <div class="lg:col-span-1 space-y-6">
-                    <!-- Project Card -->
-                    <!-- Project Card -->
-                    <a href="{{ route('laporan.project') }}" class="block group">
-                        <div
-                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] 
-                                   hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] 
-                                   transition-all cursor-pointer border 
-                                   {{ request()->routeIs('laporan.project') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
-                            <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
-                                            group-hover:scale-105 transition-transform">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5h6m2 0h1a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h1m2-2h6a2 2 0 012 2v2H7V5a2 2 0 012-2z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-gray-800 text-lg">Project</h3>
-                                    <p class="text-gray-400 text-sm">Laporan</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
+            <!-- Top Tabs Navigation -->
+            <div class="flex space-x-6 border-b border-gray-200 mb-8">
+                <a href="{{ route('laporan.project') }}" 
+                   class="pb-3 px-2 font-bold text-sm border-b-2 transition-colors {{ request()->routeIs('laporan.project') ? 'border-[#82C17D] text-[#82C17D]' : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-300' }}">
+                   Laporan Project
+                </a>
+                <a href="{{ route('laporan.tahunan') }}" 
+                   class="pb-3 px-2 font-bold text-sm border-b-2 transition-colors {{ request()->routeIs('laporan.tahunan') ? 'border-[#82C17D] text-[#82C17D]' : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-300' }}">
+                   Laporan Tahunan
+                </a>
+            </div>
 
-                    <!-- Tahunan Card -->
-                    <a href="{{ route('laporan.tahunan') }}" class="block group">
-                        <div
-                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] 
-                                   hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] 
-                                   transition-all cursor-pointer border 
-                                   {{ request()->routeIs('laporan.tahunan') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
-                            <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
-                                            group-hover:scale-105 transition-transform">
-                                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3M5 11h14M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-gray-800 text-lg">Tahunan</h3>
-                                    <p class="text-gray-400 text-sm">Laporan</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
+            <!-- Content Area -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 min-h-[400px] flex flex-col">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-800">Daftar Laporan Tahunan</h3>
                 </div>
-                <!-- Area kanan -->
-                <div
-                    class="lg:col-span-2 bg-white p-8 rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.04)] min-h-[400px] flex flex-col">
-                    <h3 class="text-xl font-bold mb-6">List Laporan Tahunan</h3>
 
                     <div class="space-y-4">
                         @forelse($years as $y)
-                            <div onclick="openTahunanModal({{ $y->tahun }})"
-                                class="flex items-center justify-between p-5 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
-                                <span class="text-gray-700 font-medium text-lg">Laporan {{ $y->tahun }}</span>
-                                <svg class="w-5 h-5 text-gray-300 group-hover:text-[#82C17D]" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 5l7 7-7 7" />
-                                </svg>
+                            <div x-data="{ 
+                                    open: false, 
+                                    loaded: false, 
+                                    loading: false, 
+                                    files: [], 
+                                    fetchFiles() {
+                                        this.loading = true;
+                                        fetch(`/laporan/tahunan/{{ $y->tahun }}`)
+                                            .then(res => res.json())
+                                            .then(data => {
+                                                this.files = data.files || [];
+                                                this.loaded = true;
+                                                this.loading = false;
+                                            })
+                                            .catch(() => { this.loading = false; });
+                                    },
+                                    formatDate(dateStr) {
+                                        if(!dateStr) return '-';
+                                        return new Date(dateStr).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+                                    },
+                                    getNoLaporan(id) {
+                                        if(!id) return '-';
+                                        return `No: ${String(id).padStart(3, '0')}/KJPP/{{ $y->tahun }}`;
+                                    },
+                                    getClientName(item) {
+                                        if(item.client && item.client.name) return item.client.name;
+                                        if(item.contact_person) return item.contact_person;
+                                        return 'Instansi/Klien Umum';
+                                    },
+                                    getCleanName(item) {
+                                        let name = item.nama_project || item.nama_file || 'Document';
+                                        if (name.toLowerCase().endsWith('.pdf')) {
+                                            return name.substring(0, name.length - 4);
+                                        }
+                                        return name;
+                                    },
+                                    getPath(item) {
+                                        return item.dokumen || item.file_path || '#';
+                                    }
+                                }" 
+                                class="border border-gray-100 rounded-xl mb-3 overflow-hidden bg-white hover:border-gray-200 transition-colors shadow-sm">
+                                
+                                <!-- Header Row -->
+                                <div @click="open = !open; if(!loaded) fetchFiles()"
+                                    class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50/50 group">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center transition-transform"
+                                             :class="open ? 'bg-[#82C17D] text-white shadow-md' : ''">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                                        </div>
+                                        <span class="text-gray-700 font-bold text-sm transition-colors" :class="open ? 'text-[#82C17D]' : ''">Laporan {{ $y->tahun }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <svg class="w-5 h-5 text-gray-300 transition-transform duration-300" 
+                                             :class="open ? 'rotate-90 text-[#82C17D]' : 'group-hover:text-[#82C17D]'"
+                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <!-- Accordion Panel -->
+                                <div x-show="open" x-collapse class="border-t border-gray-100 bg-gray-50/50">
+                                    <div class="p-5 space-y-4">
+                                        <!-- Loading state -->
+                                        <div x-show="loading" class="flex justify-center items-center py-6 text-gray-400">
+                                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-[#82C17D]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            <span class="text-sm font-medium">Memuat laporan...</span>
+                                        </div>
+
+                                        <!-- Empty state -->
+                                        <div x-show="loaded && files.length === 0" class="text-center py-6">
+                                            <p class="text-gray-500 font-medium text-sm">Belum ada file di tahun ini.</p>
+                                        </div>
+
+                                        <!-- Files List -->
+                                        <template x-for="item in files" :key="item.id || item.nama_file">
+                                            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-5 bg-white border border-gray-100 rounded-xl hover:border-[#82C17D]/40 hover:bg-green-50/30 transition-all group shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                                                <div class="flex items-start gap-4">
+                                                    <div class="mt-1">
+                                                        <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                                    </div>
+                                                    <div class="flex flex-col">
+                                                        <span class="text-base font-bold text-gray-800 group-hover:text-[#82C17D] transition-colors" x-text="getCleanName(item)"></span>
+                                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2 text-xs text-gray-500 font-medium">
+                                                            <span class="bg-gray-100 px-2 py-1 rounded text-gray-600" x-text="getNoLaporan(item.id)"></span>
+                                                            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> <span x-text="getClientName(item)"></span></span>
+                                                            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> <span x-text="formatDate(item.tanggal_mulai)"></span></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <a :href="`/storage/${getPath(item)}`" target="_blank" class="mt-4 sm:mt-0 inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:border-[#82C17D] hover:bg-[#82C17D] hover:text-white text-gray-700 rounded-xl text-sm font-bold transition-colors shrink-0 shadow-sm">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                                    Unduh PDF
+                                                </a>
+                                            </div>
+                                        </template>
+
+                                        <!-- Download ZIP Button -->
+                                        <div x-show="loaded && files.length > 0" class="flex justify-end pt-2 gap-3">
+                                            <!-- Tombol Download Rekap Excel/CSV (Baru) -->
+                                            <a :href="`/laporan/tahunan/download-rekap/{{ $y->tahun }}`"
+                                                class="bg-[#82C17D] hover:bg-[#6ba867] text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-md transition-all flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                                Unduh Laporan {{ $y->tahun }}
+                                            </a>
+
+                                            <!-- Tombol Download ZIP (Lama) -->
+                                            <a :href="`/laporan/tahunan/download-zip/{{ $y->tahun }}`"
+                                                class="bg-white border-2 border-[#82C17D] text-[#82C17D] hover:bg-green-50 px-6 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                                Unduh Semua (ZIP)
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         @empty
                             <div class="flex-grow flex flex-col items-center justify-center text-center py-20">
@@ -80,85 +154,4 @@
         </div>
     </div>
 
-    <!-- Modal Tahunan -->
-    <div id="tahunanModal"
-        class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
-        <div class="bg-white w-full max-w-md rounded-[25px] shadow-2xl overflow-hidden mx-4">
-
-            <div class="bg-[#82C17D] px-6 py-4 flex justify-between items-center text-white">
-                <h3 id="modalYearTitle" class="font-bold text-lg">Laporan 2020</h3>
-                <button onclick="closeTahunanModal()" class="hover:rotate-90 transition-transform">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <div id="fileListContainer" class="p-6 space-y-2 max-h-[300px] overflow-y-auto">
-            </div>
-
-            <div class="p-6 pt-0 flex justify-end">
-                <a id="btnDownloadZip" href="#"
-                    class="hidden bg-[#82C17D] hover:bg-[#6ba867] text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-md transition-all">
-                    Unduh semua
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function openTahunanModal(year) {
-            const container = document.getElementById('fileListContainer');
-            const btnZip = document.getElementById('btnDownloadZip');
-            const modalTitle = document.getElementById('modalYearTitle');
-
-            container.innerHTML = '<p class="text-center text-gray-400 py-4 italic">Memuat data...</p>';
-            btnZip.classList.add('hidden');
-
-            fetch(`/laporan/tahunan/${year}`)
-                .then(res => res.json())
-                .then(data => {
-                    document.getElementById('tahunanModal').classList.remove('hidden');
-                    modalTitle.innerText = 'Laporan ' + data.tahun;
-                    container.innerHTML = '';
-
-                    if (data.files && data.files.length > 0) {
-                        // MUNCULKAN TOMBOL SESUAI FIGMA
-                        btnZip.href = `/laporan/tahunan/download-zip/${year}`;
-                        btnZip.classList.remove('hidden');
-
-                        data.files.forEach(item => {
-                            // Handle mismatch attributes (Node API vs Laravel)
-                            // Node API (laporan_tahunans): nama_file, file_path
-                            // Laravel (Backup/Old): nama_project, dokumen
-                            let name = item.nama_project || item.nama_file || 'Document';
-                            let path = item.dokumen || item.file_path || '#';
-
-                            // Clean up name if it creates double extension
-                            if (!name.toLowerCase().endsWith('.pdf')) {
-                                name += '.pdf';
-                            }
-
-                            container.innerHTML += `
-                            <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                                <span class="text-[15px] text-gray-800 font-semibold">${name}</span>
-                                <a href="/storage/${path}" target="_blank" class="text-gray-400 hover:text-[#82C17D] transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                    </svg>
-                                </a>
-                            </div>
-                        `;
-                        });
-                    } else {
-                        container.innerHTML = '<p class="text-center text-gray-400 py-10 font-medium">Belum ada file di tahun ini.</p>';
-                    }
-                });
-        }
-
-        function closeTahunanModal() {
-            document.getElementById('tahunanModal').classList.add('hidden');
-        }
-    </script>
 </x-app-layout>

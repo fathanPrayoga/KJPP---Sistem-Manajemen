@@ -16,7 +16,7 @@
                             Nama Project
                         </label>
                         <input type="text" name="nama_project" required
-                            class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">
+                            class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
                     </div>
 
                     <!-- Contract Date -->
@@ -25,7 +25,7 @@
                             Contract Date
                         </label>
                         <input type="date" name="contract_date" required
-                            class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">
+                            class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
                     </div>
 
                     <!-- Contact Person -->
@@ -34,7 +34,7 @@
                             Contact Person
                         </label>
                         <input type="text" name="contact_person" required
-                            class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">
+                            class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
                     </div>
 
                     <!-- Kategori Project -->
@@ -43,7 +43,7 @@
                             Kategori Project
                         </label>
                         <select name="kategori" required
-                            class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500">
+                            class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
                             <option value="" disabled selected>Pilih Kategori Project</option>
                             <option value="Contoh Kategori Project 1">Contoh Kategori Project 1</option>
                             <option value="Contoh Kategori Project 2">Contoh Kategori Project 2</option>
@@ -58,7 +58,7 @@
                             Deskripsi
                         </label>
                         <textarea name="deskripsi" rows="4"
-                            class="w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500"></textarea>
+                            class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]"></textarea>
                     </div>
 
                     <!-- Upload Dokumen -->
@@ -77,7 +77,7 @@
                             <!-- Default 1 File Input -->
                             <div class="document-row flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-gray-50 p-3 rounded-lg border border-gray-100 relative group">
                                 <select name="document_categories[]" required
-                                    class="w-full sm:w-1/3 rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500 text-sm">
+                                    class="w-full sm:w-1/3 rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D] text-sm">
                                     <option value="" disabled selected>Pilih Kategori Dokumen</option>
                                     <option value="Contoh Kategori Dokumen A">Contoh Kategori Dokumen A</option>
                                     <option value="Contoh Kategori Dokumen B">Contoh Kategori Dokumen B</option>
@@ -142,13 +142,13 @@
                                     const file = e.target.files[0];
                                     if (file) {
                                         if (file.type !== 'application/pdf') {
-                                            alert('Peringatan! Format file ditolak. Pastikan Anda hanya mengunggah dokumen berformat PDF.');
+                                            Swal.fire({ icon: 'error', title: 'Format Ditolak!', text: 'Pastikan Anda hanya mengunggah dokumen berformat PDF.' });
                                             e.target.value = ''; // Reset input
                                             return;
                                         }
                                         
                                         if (file.size > 5 * 1024 * 1024) {
-                                            alert('Peringatan! Ukuran file terlalu besar. Batas maksimal untuk satu file adalah 5MB.');
+                                            Swal.fire({ icon: 'warning', title: 'Ukuran Terlalu Besar!', text: 'Batas maksimal untuk satu file adalah 5MB.' });
                                             e.target.value = ''; // Reset input
                                             return;
                                         }

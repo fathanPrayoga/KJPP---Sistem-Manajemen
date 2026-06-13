@@ -13,13 +13,13 @@ class DashboardController extends Controller
 
         if ($user->role === 'karyawan') {
 
-            $recentProjects = \App\Models\Project::with('client')->latest()->take(5)->get();
+            $recentProjects = \App\Models\Project::with(['client', 'documents', 'nilai', 'physicalElements'])->latest()->take(5)->get();
 
-            // Data statis sementara
+            // Mengambil data statistik secara dinamis
             $stats = [
-                'properti_count' => 4,
-                'laporan_count' => 4,
-                'pesan_count' => 1
+                'properti_count' => \App\Models\Project::count(),
+                'laporan_count' => \App\Models\Project::where('status', '!=', 'Selesai')->count(),
+                'pesan_count' => \App\Models\Message::where('recipient_id', $user->id)->where('is_read', false)->count()
             ];
 
 

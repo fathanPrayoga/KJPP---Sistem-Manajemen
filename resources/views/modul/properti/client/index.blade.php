@@ -110,75 +110,49 @@
                     </div>
 
                     <div class="overflow-x-auto overflow-y-auto max-h-[400px] pr-2">
-                        <table class="w-full text-left">
-                            <thead class="sticky top-0 bg-white">
-                                <tr class="text-gray-400 text-sm border-b">
-                                    <th class="pb-4 text-[11px] uppercase w-12 text-center">No.</th>
-                                    <th class="pb-4 text-[11px] uppercase">Nama Project</th>
-                                    <th class="pb-4 text-[11px] uppercase">Status</th>
-                                    <th class="pb-4 text-[11px] uppercase text-right">Update Terakhir</th>
-                                    <th class="pb-4 text-[11px] uppercase text-right">Aksi</th>
-                                </tr>
-                            </thead>
-
-                            <tbody class="text-sm">
-                                @forelse ($projects as $project)
-                                    <tr class="border-b last:border-0 hover:bg-gray-50/50 transition">
-                                        <td class="py-5 text-center text-gray-400 text-sm font-medium">
-                                            {{ $loop->iteration }}
-                                        </td>
-                                        <td class="py-5">
-                                            <div class="font-bold text-gray-800 capitalize">
-                                                {{ $project->nama_project }}
-                                            </div>
-                                        </td>
-
-                                        <td class="py-5">
-                                            @php
-                                                $statusBadge = strtolower($project->status ?? '');
-                                            @endphp
-                                            <span class="
-                                                px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider
-                                                @if($statusBadge === 'pending' || $statusBadge === 'menunggu')
-                                                    bg-yellow-100 text-yellow-700
-                                                @elseif($statusBadge === 'selesai' || $statusBadge === 'approved' || $statusBadge === 'verified')
-                                                    bg-green-100 text-green-700
-                                                @elseif($statusBadge === 'rejected' || $statusBadge === 'ditolak')
-                                                    bg-red-100 text-red-700
-                                                @else
-                                                    bg-gray-100 text-gray-700
-                                                @endif
-                                            ">
-                                                {{ $project->status ?? '-' }}
-                                            </span>
-                                        </td>
-
-                                        <td class="py-5 font-semibold text-gray-800 text-right">
-                                            {{ $project->updated_at->format('d M, H.i') }}
-                                        </td>
-                                        <td class="py-5 text-right">
-                                            @if(strtolower($project->status ?? '') === 'pending' || strtolower($project->status ?? '') === 'menunggu')
-                                                <form action="{{ route('client.projects.destroy', $project->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin membatalkan dan menghapus project ini permanen?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-400 hover:text-red-600 transition p-2 bg-red-50 hover:bg-red-100 rounded-lg shadow-sm" title="Hapus Project">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="py-16 text-center text-gray-400 italic">
-                                            Anda belum memiliki pengajuan project.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                        <div class="space-y-3">
+                            @forelse ($projects as $project)
+                                @php
+                                    $statusBadge = strtolower($project->status ?? '');
+                                    $statusColor = 'bg-gray-100 text-gray-700';
+                                    if ($statusBadge === 'pending' || $statusBadge === 'menunggu') $statusColor = 'bg-yellow-100 text-yellow-700';
+                                    elseif ($statusBadge === 'selesai' || $statusBadge === 'approved' || $statusBadge === 'verified') $statusColor = 'bg-green-100 text-green-700';
+                                    elseif ($statusBadge === 'rejected' || $statusBadge === 'ditolak') $statusColor = 'bg-red-100 text-red-700';
+                                @endphp
+                                <div class="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-[#82C17D]/30 transition bg-white group">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-xl bg-gray-50 group-hover:bg-green-50 flex items-center justify-center text-gray-400 group-hover:text-[#82C17D] transition">
+                                            <span class="font-bold text-sm">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-800 text-sm mb-0.5 capitalize">{{ $project->nama_project }}</h4>
+                                            <p class="text-xs text-gray-500 font-medium">Diupdate: {{ $project->updated_at->format('d M Y, H.i') }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $statusColor }}">
+                                            {{ $project->status ?? '-' }}
+                                        </span>
+                                        @if(strtolower($project->status ?? '') === 'pending' || strtolower($project->status ?? '') === 'menunggu')
+                                            <form action="{{ route('client.projects.destroy', $project->id) }}" method="POST" class="inline-block" onsubmit="confirmDelete(event, this, 'Yakin ingin membatalkan dan menghapus project ini permanen?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-400 hover:text-red-600 transition p-2 bg-red-50 hover:bg-red-100 rounded-lg shadow-sm" title="Hapus Project">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="flex flex-col items-center justify-center py-10 px-4 text-center bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
+                                    <svg class="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                    <p class="text-sm text-gray-500">Anda belum memiliki pengajuan project.</p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
 

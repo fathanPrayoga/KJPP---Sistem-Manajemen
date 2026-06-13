@@ -46,4 +46,9 @@ class Project extends Model
     {
         return $this->hasOne(Nilai::class, 'project_id');
     }
+
+    public function physicalElements()
+    {
+        return $this->hasMany(ProjectPhysicalElement::class);
+    }
 }
