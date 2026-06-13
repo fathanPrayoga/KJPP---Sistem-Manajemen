@@ -7,15 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Nilai;
 use Illuminate\Support\Facades\Auth;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 class PropertiController extends Controller
 {
-    protected $nodeApi;
-
-    public function __construct(\App\Services\NodeApiService $nodeApi)
-    {
-        $this->nodeApi = $nodeApi;
-    }
 
     // ===== FUNGSI INDEX BERDASARKAN ROLE =====
 
@@ -99,30 +93,89 @@ class PropertiController extends Controller
         $role = auth()->user()->role;
 
         if ($role === 'karyawan') {
-            $projects = Project::with('client')->latest()->get();
+            $projects = Project::with('client')
+                ->whereIn('status', ['verified', 'Selesai', 'selesai'])
+                ->latest()
+                ->get();
             return view('modul.properti.laporan.project', compact('projects'));
         } else {
             // Client - Read Only & Own Data
-            $projects = Project::where('client_id', auth()->id())->latest()->get();
+            $projects = Project::where('client_id', auth()->id())
+                ->whereIn('status', ['verified', 'Selesai', 'selesai'])
+                ->latest()
+                ->get();
             return view('modul.properti.client.laporan', compact('projects'));
         }
     }
 
-    // [INTEGRASI API NODE.JS] Ambil Detail Laporan Project
     public function getProject($id)
     {
-        // $project = Project::findOrFail($id);
-        // return response()->json($project);
+        $project = Project::findOrFail($id);
+        return response()->json($project);
+    }
 
-        // Panggil Node.js API
-        $data = $this->nodeApi->getReport($id);
-        // Node.js queries 'SELECT * FROM projects WHERE id = ?', returns array
-        $project = (!empty($data) && isset($data[0])) ? $data[0] : null;
+    public function generatePdf($id)
+    {
+        $project = Project::with(['client', 'documents', 'physicalElements'])->findOrFail($id);
+        $nilai = Nilai::where('project_id', $id)->first();
 
-        if ($project) {
-            return response()->json($project);
+        // Buat data untuk di-pass ke view template PDF
+        $data = [
+            'project' => $project,
+            'client' => $project->client,
+            'documents' => $project->documents,
+            'fisik' => $project->physicalElements->first(),
+            'nilai' => $nilai,
+            'tanggal_cetak' => \Carbon\Carbon::now()->translatedFormat('d F Y')
+        ];
+
+        // Load view & generate output PDF
+        $pdf = Pdf::loadView('modul.properti.laporan.template_pdf', $data);
+        $pdf->setPaper('A4', 'portrait');
+        $output = $pdf->output();
+
+        // Tentukan nama file dan path
+        $fileName = 'Laporan_Penilaian_' . str_replace(' ', '_', $project->nama_project) . '.pdf';
+        $filePath = 'laporan_project/' . $fileName;
+
+        // Jika sudah ada file dokumen lama, hapus agar direplace (overwrite)
+        if ($project->dokumen && \Illuminate\Support\Facades\Storage::disk('public')->exists($project->dokumen)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($project->dokumen);
         }
-        return response()->json(['error' => 'Project not found (Node API)'], 404);
+
+        // Simpan file PDF ke storage
+        \Illuminate\Support\Facades\Storage::disk('public')->put($filePath, $output);
+
+        // Update record project
+        $project->dokumen = $filePath;
+        if (empty($project->tanggal_mulai)) {
+            $project->tanggal_mulai = \Carbon\Carbon::now();
+        }
+        if ($project->status !== 'Selesai') {
+            $project->status = 'Selesai';
+        }
+        $project->save();
+
+        // Sinkronisasi ke Laporan Tahunan
+        if ($project->tanggal_mulai) {
+            try {
+                $year = \Carbon\Carbon::parse($project->tanggal_mulai)->year;
+                \App\Models\LaporanTahunan::updateOrCreate(
+                    [
+                        'tahun' => $year,
+                        'nama_file' => 'Laporan Project ' . $project->nama_project
+                    ],
+                    [
+                        'file_path' => $filePath
+                    ]
+                );
+            } catch (\Exception $e) {
+                \Log::error("Gagal simpan ke LaporanTahunan dari generatePdf: " . $e->getMessage());
+            }
+        }
+
+        // Stream (tampilkan) PDF ke user
+        return $pdf->stream($fileName);
     }
 
     public function uploadLaporan(Request $request)
@@ -186,17 +239,12 @@ class PropertiController extends Controller
         return view('modul.properti.laporan.tahunan', compact('years'));
     }
 
-    // [INTEGRASI API NODE.JS] Ambil Laporan Tahunan
     public function getTahunanByYear($year)
     {
-        // OLD CODE (Laravel Native)
-        // $projects = Project::whereYear('tanggal_mulai', $year)
-        //     ->whereNotNull('dokumen')
-        //     ->get();
-        // return response()->json(['tahun' => $year, 'files' => $projects]);
-
-        // NEW CODE (Node API)
-        $projects = $this->nodeApi->getYearlyReport($year);
+        $projects = Project::with('client')
+            ->whereYear('tanggal_mulai', $year)
+            ->whereNotNull('dokumen')
+            ->get();
         return response()->json(['tahun' => $year, 'files' => $projects]);
     }
 
@@ -238,5 +286,29 @@ class PropertiController extends Controller
         }
 
         return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    }
+
+    public function downloadRekapTahunan($year)
+    {
+        $projects = Project::with(['client', 'nilai'])
+            ->whereYear('tanggal_mulai', $year)
+            ->whereIn('status', ['Selesai', 'selesai'])
+            ->get();
+
+        if ($projects->isEmpty()) {
+            return back()->with('error', 'Tidak ada data project yang selesai pada tahun ini.');
+        }
+
+        $data = [
+            'year' => $year,
+            'projects' => $projects
+        ];
+
+        $pdf = Pdf::loadView('modul.properti.laporan.tahunan_pdf', $data);
+        $pdf->setPaper('A4', 'landscape');
+
+        $fileName = 'Laporan_Tahunan_' . $year . '.pdf';
+
+        return $pdf->download($fileName);
     }
 }

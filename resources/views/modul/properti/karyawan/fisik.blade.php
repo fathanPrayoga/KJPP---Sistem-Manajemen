@@ -71,65 +71,48 @@
 
                 <!-- Right Side: Project List -->
                 <div class="lg:col-span-2 bg-white p-8 rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
-                    <h3 class="text-xl font-bold mb-6">Terbaru</h3>
+                    <h3 class="text-xl font-bold mb-6">Daftar Project</h3>
                     <div class="overflow-x-auto overflow-y-auto max-h-[400px] pr-2">
-                        <table class="w-full text-left">
-                            <thead class="sticky top-0 bg-white z-10">
-                                <tr class="text-gray-400 text-sm border-b">
-                                    <th class="pb-4 font-semibold text-gray-700">Nama Client</th>
-                                    <th class="pb-4 font-semibold text-gray-700">Nama Project</th>
-                                    <th class="pb-4 font-semibold text-gray-700">Status</th>
-                                    <th class="pb-4 font-semibold text-gray-700">Waktu</th>
-                                    <th class="pb-4 font-semibold text-gray-700">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-sm">
-                                @forelse($projects as $project)
-                                    <tr class="border-b last:border-0 hover:bg-gray-50 transition">
-                                        <td class="py-4 font-medium text-gray-800">
-                                            {{ $project->client->name ?? 'Unknown Client' }}</td>
-                                        <td class="py-4 text-gray-600">{{ $project->nama_project ?? 'Project' }}</td>
-                                        <td class="py-4 text-sm font-medium text-gray-700">
-                                            {{ ucfirst($project->status ?? '-') }}</td>
-                                        <td class="py-4 font-semibold text-gray-800">
-                                            {{ $project->created_at->format('H.i') }}</td>
-                                        <td class="py-4">
-                                            @if(\Illuminate\Support\Facades\Route::has('projects.show'))
-                                                <a href="{{ route('projects.show', $project->id) }}"
-                                                    class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-green-50 text-green-700 hover:bg-green-100 mr-2">View</a>
-                                            @else
-                                                <span
-                                                    class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-400 mr-2 cursor-not-allowed">View</span>
-                                            @endif
-
-                                            @if(\Illuminate\Support\Facades\Route::has('projects.edit'))
-                                                <a href="{{ route('projects.edit', $project->id) }}"
-                                                    class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-yellow-50 text-yellow-700 hover:bg-yellow-100 mr-2">Edit</a>
-                                            @else
-                                                <span
-                                                    class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-400 mr-2 cursor-not-allowed">Edit</span>
-                                            @endif
-
-                                            {{-- Verification Button --}}
-                                            <a href="{{ route('survey.verification.page', $project->id) }}"
-                                                class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-sm transition">
-                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                </svg>
-                                                Verifikasi Survey
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="text-center py-8 text-gray-400 italic">Belum ada project.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                        <div class="space-y-3">
+                            @forelse($projects as $project)
+                                @php
+                                    $status = strtolower($project->status ?? 'pending');
+                                    $isVerified = $status === 'verified' || $status === 'selesai';
+                                    $isRejected = $status === 'rejected';
+                                    $statusColor = $isVerified ? 'bg-green-100 text-green-800' : ($isRejected ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800');
+                                    $statusText = $isVerified ? 'Verified' : ($isRejected ? 'Rejected' : 'Pending');
+                                @endphp
+                                <div class="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-[#82C17D]/30 transition bg-white group">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-xl bg-gray-50 group-hover:bg-green-50 flex items-center justify-center text-gray-400 group-hover:text-[#82C17D] transition hidden md:flex">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-800 text-sm mb-0.5 capitalize">{{ $project->nama_project ?? 'Project' }}</h4>
+                                            <p class="text-xs text-gray-500 font-medium">{{ $project->client->name ?? 'Unknown Client' }} &bull; {{ $project->created_at->format('H.i') }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $statusColor }}">
+                                            {{ $statusText }}
+                                        </span>
+                                        <a href="{{ route('survey.verification.page', $project->id) }}"
+                                            class="inline-flex items-center px-4 py-2 bg-[#82C17D] hover:bg-[#6ba867] text-white text-xs font-bold rounded-full transition shadow-sm">
+                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                            Detail Survey
+                                        </a>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="flex flex-col items-center justify-center py-10 px-4 text-center bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
+                                    <svg class="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                    <p class="text-sm text-gray-500">Belum ada project.</p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
             </div>

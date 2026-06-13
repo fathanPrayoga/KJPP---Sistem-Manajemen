@@ -3,73 +3,48 @@
         <div class="max-w-7xl mx-auto px-6 py-8">
             <h1 class="mt-8 text-3xl font-bold text-gray-800 mb-8 font-poppins text-[32px]">Laporan</h1>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-1 space-y-6">
-                    <a href="{{ route('laporan.project') }}" class="block">
-                        <div
-                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-50 ring-2 ring-[#82C17D] ring-offset-2">
-                            <div class="flex items-center space-x-4">
-                                <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5h6m2 0h1a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h1m2-2h6a2 2 0 012 2v2H7V5a2 2 0 012-2z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-gray-800 text-lg">Project</h3>
-                                    <p class="text-gray-400 text-sm">Laporan</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 min-h-[400px] flex flex-col">
 
-
-                </div>
-
-                <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow">
-                    <h3 class="text-xl font-bold mb-6">Status</h3>
 
                     @if($projects->isEmpty())
                         <div class="text-center text-gray-400 py-10">
                             Belum ada laporan project
                         </div>
                     @else
-                        <table class="w-full text-sm">
-                            <thead class="border-b text-gray-500 sticky top-0 bg-white z-10">
-                                <tr>
-                                    <th class="py-2 text-left w-16">No</th>
-                                    <th class="text-left">Laporan</th>
-                                    <th class="text-right">Status</th>
-                                    <th class="text-right">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($projects as $i => $project)
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-4">{{ $i + 1 }}.</td>
-                                        <td class="py-4 font-medium text-gray-800">Laporan {{ $project->nama_project }}</td>
-                                        <td class="py-4 text-right">
+                        <div class="space-y-3">
+                            @foreach($projects as $i => $project)
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50/50 transition bg-white group gap-4">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 text-sm font-bold">
+                                            {{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-800 text-sm mb-0.5 capitalize">{{ $project->nama_project }}</h4>
+                                            <p class="text-xs text-gray-500 font-medium">Diupdate: {{ $project->updated_at->format('d M Y, H.i') }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center shrink-0 ml-auto">
+                                        <div class="w-[110px] min-w-[110px] shrink-0 flex justify-center pr-3">
                                             <x-status-badge :status="$project->status" />
-                                        </td>
-                                        <td class="py-4 text-right">
+                                        </div>
+                                        
+                                        <div class="flex items-center w-[130px] min-w-[130px] shrink-0 border-l border-gray-200 pl-5">
                                             @if($project->dokumen)
-                                                <button
-                                                    onclick="openDownloadModal('{{ $project->nama_project }}', '{{ asset('storage/' . $project->dokumen) }}')"
-                                                    class="inline-flex items-center px-4 py-2 bg-[#82C17D] hover:bg-[#6ba867] text-white text-xs font-bold rounded-full transition shadow-sm">
-                                                    Lihat
+                                                <button onclick="openDownloadModal('{{ $project->nama_project }}', '{{ asset('storage/' . $project->dokumen) }}')"
+                                                    class="p-1.5 text-gray-400 hover:text-[#82C17D] hover:bg-green-50 rounded-md transition-colors" title="Unduh/Lihat Dokumen">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                                                 </button>
                                             @else
-                                                <span class="text-gray-400 text-xs italic">Tidak ada file</span>
+                                                <span class="text-xs text-gray-400 italic">Belum ada file</span>
                                             @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     @endif
-                </div>
             </div>
-        </div>
     </div>
 
     <!-- Modal Download Similar to Tahunan -->

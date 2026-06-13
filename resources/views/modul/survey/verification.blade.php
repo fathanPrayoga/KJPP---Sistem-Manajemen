@@ -43,6 +43,34 @@
                 </div>
             </div>
         </div>
+
+        <!-- REJECT MODAL -->
+        <div id="surveyRejectModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeRejectModal()"></div>
+            <div class="relative w-full max-w-md rounded-2xl shadow-2xl bg-white p-8 z-10 border-t-4 border-red-500">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Tolak Elemen Survey</h3>
+                <p class="text-sm text-gray-600 mb-4">Silakan masukkan alasan mengapa data survey ini ditolak.</p>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Catatan Penolakan (Wajib)</label>
+                    <textarea id="rejectNotes" placeholder="Tuliskan catatan revisi di sini..." required
+                        class="w-full border border-gray-300 rounded-lg px-4 py-3 h-28 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"></textarea>
+                    <p class="text-xs text-red-500 mt-1 hidden" id="rejectError">Catatan penolakan harus diisi.</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <button type="button" onclick="submitReject()"
+                        class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-bold shadow-md">
+                        Kirim Penolakan
+                    </button>
+                    <button type="button" onclick="closeRejectModal()"
+                        class="flex-1 bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200 transition font-bold border border-gray-300">
+                        Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     {{-- Leaflet JS --}}
@@ -116,7 +144,7 @@
                                 </span>
                                 <div class="flex space-x-2">
                                     ${item.status === 'pending' ? `
-                                        <button onclick="verifyElement(${item.id}, 'rejected')" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition" title="Tolak">
+                                        <button onclick="openRejectModal(${item.id})" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition" title="Tolak">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                         </button>
                                         <button onclick="verifyElement(${item.id}, 'verified')" class="p-1.5 text-green-500 hover:bg-green-50 rounded-lg transition" title="Setujui">
@@ -141,8 +169,46 @@
             }
         }
 
-        async function verifyElement(id, status) {
-            if (!confirm(`Apakah Anda yakin ingin mengubah status menjadi ${status}?`)) return;
+        let currentRejectId = null;
+
+        function openRejectModal(id) {
+            currentRejectId = id;
+            document.getElementById('rejectNotes').value = '';
+            document.getElementById('rejectError').classList.add('hidden');
+            document.getElementById('surveyRejectModal').classList.remove('hidden');
+        }
+
+        function closeRejectModal() {
+            currentRejectId = null;
+            document.getElementById('surveyRejectModal').classList.add('hidden');
+        }
+
+        function submitReject() {
+            const notes = document.getElementById('rejectNotes').value.trim();
+            if (!notes) {
+                document.getElementById('rejectError').classList.remove('hidden');
+                return;
+            }
+            
+            verifyElement(currentRejectId, 'rejected', notes);
+            closeRejectModal();
+        }
+
+        async function verifyElement(id, status, notes = '') {
+            let msg = status === 'verified' ? 'menyetujui' : 'menolak';
+            if (status === 'verified') {
+                const result = await Swal.fire({
+                    title: 'Apakah Anda Yakin?',
+                    text: `Anda akan ${msg} elemen survey ini.`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, Setujui!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                });
+                if (!result.isConfirmed) return;
+            }
 
             try {
                 const response = await fetch(`/survey/element/${id}/verify`, {
@@ -152,17 +218,24 @@
                         'X-CSRF-TOKEN': csrfToken,
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ status: status })
+                    body: JSON.stringify({ status: status, notes: notes })
                 });
 
                 const result = await response.json();
                 if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Status elemen berhasil diperbarui.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                     loadElements(); // Reload list
                 } else {
-                    alert('Gagal update status');
+                    Swal.fire({ icon: 'error', title: 'Gagal', text: 'Gagal update status elemen.' });
                 }
             } catch (e) {
-                alert('Error system');
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan sistem saat menghubungi server.' });
             }
         }
 

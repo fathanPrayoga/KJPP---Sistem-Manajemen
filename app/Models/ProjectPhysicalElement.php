@@ -14,6 +14,7 @@ class ProjectPhysicalElement extends Model
         'longitude',
         'image_path',
         'status',
+        'notes',
     ];
 
     public function project()

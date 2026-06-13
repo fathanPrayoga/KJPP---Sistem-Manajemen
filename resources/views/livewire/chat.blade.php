@@ -185,7 +185,7 @@
                             <!-- Livewire upload indicator -->
                             <div wire:loading wire:target="attachment" class="text-xs text-blue-500">Mengunggah...</div>
 
-                            <button id="send-button" type="submit" class="ms-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full disabled:opacity-50" wire:loading.attr="disabled">➤</button>
+                            <button id="send-button" type="submit" class="ms-2 bg-[#82C17D] hover:bg-[#6fa86a] text-white px-4 py-2 rounded-full disabled:opacity-50 transition" wire:loading.attr="disabled">➤</button>
                         </form>
                     </div>
 

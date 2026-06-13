@@ -57,11 +57,7 @@ Route::middleware('auth')->group(function () {
     // [LARAVEL NATIVE] ===== SISTEM CHAT (API Node.js Tersedia untuk Pengembangan) =====
     Route::get('/chats', \App\Livewire\Chat::class)->name('chats.index');
     Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
-    Route::get('/messages/conversation/{user}', [\App\Http\Controllers\MessageController::class, 'conversation'])->name('messages.conversation');
-    Route::post('/messages', [\App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
-    Route::match(['put', 'patch'], '/messages/{message}', [\App\Http\Controllers\MessageController::class, 'update'])->name('messages.update');
-    Route::delete('/messages/{message}', [\App\Http\Controllers\MessageController::class, 'destroy'])->name('messages.destroy');
-    Route::post('/messages/conversation/{user}/read', [\App\Http\Controllers\MessageController::class, 'markRead'])->name('messages.markRead');
+
 
     // [TERINTEGRASI NODE.JS] ===== SURVEY / FISIK (PEKERJA TAMBAHAN) =====
     Route::get('/survey/{project_id?}', function ($project_id = null) {
@@ -87,12 +83,14 @@ Route::middleware('auth')->group(function () {
 Route::prefix('laporan')->middleware('auth')->group(function () {
     Route::get('/project', [PropertiController::class, 'laporanProject'])->name('laporan.project');
     Route::get('/project/{id}', [PropertiController::class, 'getProject'])->name('laporan.project.show');
+    Route::get('/project/{id}/pdf', [PropertiController::class, 'generatePdf'])->name('laporan.project.pdf');
     Route::post('/upload', [PropertiController::class, 'uploadLaporan'])->name('laporan.upload');
     Route::delete('/reset/{id}', [PropertiController::class, 'resetLaporan'])->name('laporan.reset');
     Route::get('/tahunan', [PropertiController::class, 'laporanTahunan'])->name('laporan.tahunan');
     Route::get('/tahunan/{year}', [PropertiController::class, 'getTahunanByYear'])->name('laporan.tahunan.show');
     Route::delete('/project/delete/{id}', [PropertiController::class, 'deleteProject'])->name('laporan.project.delete');
     Route::get('/tahunan/download-zip/{year}', [PropertiController::class, 'downloadZipTahunan'])->name('laporan.tahunan.zip');
+    Route::get('/tahunan/download-rekap/{year}', [PropertiController::class, 'downloadRekapTahunan'])->name('laporan.tahunan.rekap');
 });
 
 Route::get('/test-node-api', function () {

@@ -8,7 +8,8 @@
                 <div class="lg:col-span-1 space-y-6">
                     <!-- Dokumen Card -->
                     <a href="{{ route('properti.dokumen') }}" class="block group">
-                        <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
+                        <div
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
                                 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
                                 transition-all cursor-pointer border {{ request()->routeIs('properti.dokumen') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
@@ -30,14 +31,17 @@
 
                     <!-- Fisik Card -->
                     <a href="{{ route('properti.fisik') }}" class="block group">
-                        <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
+                        <div
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
                                 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
                                 transition-all cursor-pointer border {{ request()->routeIs('properti.fisik') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
                                 <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
                                         group-hover:scale-105 transition-transform">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                                     </svg>
                                 </div>
                                 <div>
@@ -50,14 +54,18 @@
 
                     <!-- Penilaian Card -->
                     <a href="{{ route('properti.penilaian') }}" class="block group">
-                        <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
+                        <div
+                            class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
                                 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
                                 transition-all cursor-pointer border {{ request()->routeIs('properti.penilaian') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
                             <div class="flex items-center space-x-4">
                                 <div class="bg-[#82C17D] p-4 rounded-[22px] text-white shadow-lg
                                         group-hover:scale-105 transition-transform">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                        </path>
                                     </svg>
                                 </div>
                                 <div>
@@ -73,28 +81,52 @@
                 <div class="lg:col-span-2 bg-white p-8 rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
                     <h3 class="text-xl font-bold mb-6">Terbaru</h3>
                     <div class="overflow-x-auto overflow-y-auto max-h-[400px] pr-2">
-                        <table class="w-full text-left">
-                            <thead class="sticky top-0 bg-white z-10">
-                                <tr class="text-gray-400 text-sm border-b">
-                                    <th class="pb-4 font-semibold">Nama Client</th>
-                                    <th class="pb-4 font-semibold">Nama Project</th>
-                                    <th class="pb-4 font-semibold">Waktu</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-sm">
-                                @forelse($projects as $project)
-                                <tr class="border-b last:border-0 hover:bg-gray-50 transition">
-                                    <td class="py-4 font-medium text-gray-800">{{ $project->client->name ?? 'Unknown Client' }}</td>
-                                    <td class="py-4 text-gray-600">{{ $project->nama_project ?? 'Project' }}</td>
-                                    <td class="py-4 font-semibold text-gray-800">{{ $project->created_at?->format('d M Y') ?? 'Belum ada tanggal' }}</td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="3" class="text-center py-8 text-gray-400 italic">Belum ada project.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                        <div class="space-y-3">
+                            @forelse($projects as $project)
+                                <div
+                                    class="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-[#82C17D]/30 transition bg-white group cursor-pointer">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-12 h-12 rounded-xl bg-gray-50 group-hover:bg-green-50 flex items-center justify-center text-gray-400 group-hover:text-[#82C17D] transition">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-800 text-sm mb-0.5">
+                                                {{ $project->nama_project ?? 'Project' }}</h4>
+                                            <p class="text-xs text-gray-500 flex items-center gap-1">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                                    </path>
+                                                </svg>
+                                                {{ $project->client->name ?? 'Unknown Client' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span
+                                            class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Dibuat</span>
+                                        <span
+                                            class="text-sm font-bold text-gray-800">{{ $project->created_at?->format('d M Y') ?? 'Belum ada tanggal' }}</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div
+                                    class="flex flex-col items-center justify-center py-10 px-4 text-center bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
+                                    <svg class="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                                        </path>
+                                    </svg>
+                                    <p class="text-sm text-gray-500">Belum ada project terbaru.</p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
             </div>

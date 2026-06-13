@@ -10,13 +10,10 @@ use ZipArchive;
 
 class ProjectDocumentController extends Controller
 {
-    protected $nodeApi;
-
-    public function __construct(\App\Services\NodeApiService $nodeApi)
+    public function __construct()
     {
         // Only karyawan can access these routes
         $this->middleware(['auth', 'verified']);
-        $this->nodeApi = $nodeApi;
     }
 
     // show documents for karyawan view (grouped by project)
@@ -73,18 +70,15 @@ class ProjectDocumentController extends Controller
 
         $status = $request->input('action') === 'approve' ? 'verified' : 'rejected';
 
-        // Call Node.js API
-        $result = $this->nodeApi->verifyDocument($document->id, [
+        // Update local database
+        $document->update([
             'status' => $status,
             'notes' => $request->input('notes'),
-            'verified_by' => Auth::id()
+            'verified_by' => Auth::id(),
+            'verified_at' => now(),
         ]);
 
-        if ($result) {
-            return redirect()->back()->with('success', 'Dokumen berhasil diverifikasi (via Node.js API)');
-        } else {
-            return redirect()->back()->with('error', 'Gagal verifikasi via Node.js API. Cek koneksi server.');
-        }
+        return redirect()->back()->with('success', 'Dokumen berhasil diverifikasi');
     }
 
     // verify project (set all documents to verified)

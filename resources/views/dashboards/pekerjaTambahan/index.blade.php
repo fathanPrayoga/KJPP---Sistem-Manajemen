@@ -21,7 +21,6 @@
                                     <th class="pb-4 font-semibold w-10">No</th>
                                     <th class="pb-4 font-semibold">Nama Project</th>
                                     <th class="pb-4 font-semibold text-center">Aksi</th>
-                                    <th class="pb-4 font-semibold text-right">Status</th>
                                 </tr>
                             </thead>
                             <tbody class="text-sm">
@@ -40,14 +39,11 @@
                                                     <svg class="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                                 </button>
                                             </td>
-                                            <td class="py-4 text-right">
-                                                <x-status-badge :status="$project->status ?? 'pending'" />
-                                            </td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="4" class="text-center py-8">
+                                        <td colspan="3" class="text-center py-8">
                                             <div class="flex flex-col items-center justify-center text-gray-400">
                                                 <svg class="w-12 h-12 mb-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                                 <p class="text-sm italic">Belum ada tugas survey yang tersedia.</p>
@@ -229,18 +225,23 @@
                 if (result.success && result.data.length > 0) {
                     result.data.forEach(item => {
                         const el = document.createElement('div');
-                        el.className = 'bg-white border border-gray-100 p-4 rounded-xl shadow-sm flex items-center justify-between';
+                        el.className = 'bg-white border border-gray-100 p-4 rounded-xl shadow-sm flex flex-col mb-4';
                         el.innerHTML = `
-                            <div class="flex items-center space-x-4">
-                                <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
-                                    ${item.image_path ? `<img src="/storage/${item.image_path}" class="w-full h-full object-cover">` : '<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>'}
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
+                                        ${item.image_path ? '<img src="/storage/' + item.image_path + '" class="w-full h-full object-cover">' : '<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>'}
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-gray-800 text-sm">${item.name}</h5>
+                                        <p class="text-xs text-gray-500">Lat: ${parseFloat(item.latitude).toFixed(6)}, Long: ${parseFloat(item.longitude).toFixed(6)}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h5 class="font-bold text-gray-800 text-sm">${item.name}</h5>
-                                    <p class="text-xs text-gray-500">Lat: ${parseFloat(item.latitude).toFixed(6)}, Long: ${parseFloat(item.longitude).toFixed(6)}</p>
+                                <div class="flex flex-col items-end">
+                                    <span class="px-3 py-1 ${item.status === 'rejected' ? 'bg-red-100 text-red-700' : (item.status === 'verified' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700')} text-[10px] font-bold rounded-full uppercase tracking-wide">${item.status}</span>
                                 </div>
                             </div>
-                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-[10px] font-bold rounded-full uppercase tracking-wide">${item.status}</span>
+                            ${item.status === 'rejected' && item.notes ? '<div class="mt-3 p-3 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-xs text-red-700"><strong class="block mb-1">Catatan Revisi:</strong>' + item.notes + '</div>' : ''}
                         `;
                         container.appendChild(el);
                     });
@@ -318,7 +319,7 @@
             const fileInput = document.getElementById('fileInput');
 
             if(!name || !lat || !lng) {
-                alert('Nama dan Lokasi (Klik Peta) wajib diisi!');
+                Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Nama dan Lokasi (Klik Peta) wajib diisi!' });
                 return;
             }
 
@@ -353,7 +354,7 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('Berhasil menyimpan!');
+                    Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Berhasil menyimpan elemen!', timer: 2000, showConfirmButton: false });
                     switchView('list');
                     loadElements(currentProjectId);
                 } else {
@@ -363,7 +364,7 @@
                     } else if (result.message) {
                         errorMsg += '\n' + result.message;
                     }
-                    alert(errorMsg);
+                    Swal.fire({ icon: 'error', title: 'Gagal', text: errorMsg });
                 }
 
                 if(btn) {
@@ -372,7 +373,7 @@
                 }
             } catch (error) {
                 console.error('Error saving:', error);
-                alert('Terjadi kesalahan sistem: ' + error.message);
+                Swal.fire({ icon: 'error', title: 'Error Sistem', text: 'Terjadi kesalahan sistem: ' + error.message });
                 
                 // Fallback reset button if error
                 const btn = document.querySelector('button[onclick="saveElementReal()"]');

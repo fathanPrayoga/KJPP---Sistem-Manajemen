@@ -11,29 +11,39 @@ class UserSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-{
-    // Akun Karyawan
-    \App\Models\User::create([
-        'name' => 'Aditya Karyawan',
-        'email' => 'karyawan@test.com',
-        'password' => bcrypt('password'),
-        'role' => 'karyawan',
-    ]);
+    {
+    // 3 Akun Karyawan
+    $karyawans = [
+        ['name' => 'Karyawan Satu', 'email' => 'karyawan1@test.com'],
+        ['name' => 'Karyawan Dua', 'email' => 'karyawan2@test.com'],
+        ['name' => 'Karyawan Tiga', 'email' => 'karyawan3@test.com'],
+    ];
 
-    // Akun Client
-    \App\Models\User::create([
-        'name' => 'Asri Client',
-        'email' => 'client@test.com',
-        'password' => bcrypt('password'),
-        'role' => 'client',
-    ]);
+    foreach ($karyawans as $k) {
+        \App\Models\User::updateOrCreate(
+            ['email' => $k['email']],
+            ['name' => $k['name'], 'password' => bcrypt('password'), 'role' => 'karyawan']
+        );
+    }
 
-    // Akun Pekerja Tambahan
-    \App\Models\User::create([
-        'name' => 'Anto Pekerja',
-        'email' => 'pekerja@test.com',
-        'password' => bcrypt('password'),
-        'role' => 'pekerjaTambahan',
-    ]);
+    // Akun Client (1 saja sebagai default)
+    \App\Models\User::updateOrCreate(
+        ['email' => 'client@test.com'],
+        ['name' => 'Client Default', 'password' => bcrypt('password'), 'role' => 'client']
+    );
+
+    // 3 Akun Pekerja Tambahan
+    $pekerjas = [
+        ['name' => 'Pekerja Satu', 'email' => 'pekerja1@test.com'],
+        ['name' => 'Pekerja Dua', 'email' => 'pekerja2@test.com'],
+        ['name' => 'Pekerja Tiga', 'email' => 'pekerja3@test.com'],
+    ];
+
+    foreach ($pekerjas as $p) {
+        \App\Models\User::updateOrCreate(
+            ['email' => $p['email']],
+            ['name' => $p['name'], 'password' => bcrypt('password'), 'role' => 'pekerjaTambahan']
+        );
+    }
 }
 }

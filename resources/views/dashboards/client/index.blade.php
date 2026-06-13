@@ -5,7 +5,7 @@
                 {{ Auth::user()->name }}!</h1>
 
             @php
-                $projects = \App\Models\Project::where('client_id', Auth::id())->latest()->take(5)->get();
+                $projects = \App\Models\Project::with(['documents', 'nilai', 'physicalElements'])->where('client_id', Auth::id())->latest()->take(5)->get();
                 $projectCount = \App\Models\Project::where('client_id', Auth::id())->count();
             @endphp
 
@@ -78,39 +78,111 @@
                     </div>
                     <div class="overflow-x-auto overflow-y-auto max-h-[400px] pr-2">
                         <table class="w-full text-left">
-                            <thead class="sticky top-0 bg-white z-10">
-                                <tr class="text-gray-400 text-sm border-b">
-                                    <th class="pb-4 font-semibold w-12 text-center">No</th>
-                                    <th class="pb-4 font-semibold">Nama Project</th>
-                                    <th class="pb-4 font-semibold">Status</th>
-                                    <th class="pb-4 font-semibold text-right">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-sm">
+
                                 @forelse($projects as $index => $project)
-                                    <tr class="border-b last:border-0">
-                                        <td class="py-4 font-medium text-gray-400 text-center">{{ $index + 1 }}</td>
-                                        <td class="py-4 font-bold text-gray-800 capitalize">{{ $project->nama_project ?? ($project->name ?? 'Project') }}</td>
+                                    @php
+                                        // 1. Status Dokumen
+                                        $dokStatus = 'Belum Lengkap';
+                                        $dokColor = 'bg-gray-100 text-gray-600';
+                                        if ($project->documents->count() > 0) {
+                                            $allDocVer = $project->documents->every(fn($d) => strtolower($d->status) === 'verified');
+                                            $hasDocRej = $project->documents->some(fn($d) => strtolower($d->status) === 'rejected');
+                                            if ($allDocVer) { $dokStatus = 'Verified'; $dokColor = 'bg-green-100 text-green-800'; }
+                                            elseif ($hasDocRej) { $dokStatus = 'Rejected'; $dokColor = 'bg-red-100 text-red-800'; }
+                                            else { $dokStatus = 'Pending'; $dokColor = 'bg-yellow-100 text-yellow-800'; }
+                                        }
+
+                                        // 2. Status Fisik
+                                        $fisikStatus = 'Belum Disurvey';
+                                        $fisikColor = 'bg-gray-100 text-gray-600';
+                                        if ($project->physicalElements->count() > 0) {
+                                            $allFisVer = $project->physicalElements->every(fn($e) => strtolower($e->status) === 'verified' || strtolower($e->status) === 'selesai');
+                                            $hasFisRej = $project->physicalElements->some(fn($e) => strtolower($e->status) === 'rejected');
+                                            if ($allFisVer) { $fisikStatus = 'Verified'; $fisikColor = 'bg-green-100 text-green-800'; }
+                                            elseif ($hasFisRej) { $fisikStatus = 'Rejected'; $fisikColor = 'bg-red-100 text-red-800'; }
+                                            else { $fisikStatus = 'Pending'; $fisikColor = 'bg-yellow-100 text-yellow-800'; }
+                                        }
+
+                                        // 3. Status Penilaian
+                                        $nilStatus = 'belum dinilai';
+                                        if ($project->nilai) {
+                                            $nilObj = $project->nilai->status_penilaian;
+                                            $nilStatus = $nilObj instanceof \UnitEnum ? $nilObj->value : ($nilObj ?? 'belum dinilai');
+                                        }
+                                        $nilStatus = strtolower($nilStatus);
+                                        $nilColor = 'bg-red-100 text-red-800';
+                                        if ($nilStatus === 'sedang dinilai') $nilColor = 'bg-yellow-100 text-yellow-800';
+                                        if ($nilStatus === 'sudah dinilai') $nilColor = 'bg-green-100 text-green-800';
+                                    @endphp
+                                    <tr class="border-b last:border-0 hover:bg-gray-50 transition group">
+                                        <td class="py-4 font-medium text-gray-400 text-center w-12">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
+                                        <td class="py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="bg-gray-50 p-2 rounded-lg text-gray-400 group-hover:text-[#82C17D] group-hover:bg-green-50 transition">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                                    </svg>
+                                                </div>
+                                                <span class="font-bold text-gray-800 capitalize">{{ $project->nama_project ?? ($project->name ?? 'Project') }}</span>
+                                            </div>
+                                        </td>
                                         <td class="py-4">
                                             <x-status-badge :status="$project->status ?? 'pending'" />
                                         </td>
                                         <td class="py-4 text-right">
-                                            @if(strtolower($project->status ?? '') === 'pending' || strtolower($project->status ?? '') === 'menunggu')
-                                                <form action="{{ route('client.projects.destroy', $project->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan dan menghapus pengajuan project ini secara permanen?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-500 hover:text-red-700 transition p-2 bg-red-50 hover:bg-red-100 rounded-lg shadow-sm" title="Batalkan & Hapus">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
-                                                    </button>
-                                                </form>
-                                            @endif
+                                            <div class="flex items-center justify-end gap-2">
+                                                @if(strtolower($project->status ?? '') === 'pending' || strtolower($project->status ?? '') === 'menunggu')
+                                                    <form action="{{ route('client.projects.destroy', $project->id) }}" method="POST" class="inline-block" onsubmit="confirmDelete(event, this, 'Apakah Anda yakin ingin membatalkan dan menghapus pengajuan project ini secara permanen?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-500 hover:text-red-700 transition p-2 bg-red-50 hover:bg-red-100 rounded-lg shadow-sm" title="Batalkan & Hapus">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                <button onclick="toggleRow('row-{{ $project->id }}', 'icon-{{ $project->id }}')" class="p-2 hover:bg-gray-100 rounded-lg transition" title="Lihat Rincian Status">
+                                                    <svg id="icon-{{ $project->id }}" class="w-5 h-5 text-gray-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr id="row-{{ $project->id }}" class="hidden bg-gray-50/50">
+                                        <td colspan="4" class="p-0 border-b border-gray-100">
+                                            <div class="px-6 py-5 grid grid-cols-1 md:grid-cols-3 gap-4 border-l-4 border-[#82C17D]">
+                                                <!-- Dokumen Card -->
+                                                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+                                                    <div>
+                                                        <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Dokumen Verifikasi</div>
+                                                        <div class="font-bold text-gray-800 mb-3">{{ $project->documents->count() }} <span class="font-medium text-gray-400 text-sm">File</span></div>
+                                                    </div>
+                                                    <div><span class="px-3 py-1 rounded-full text-[10px] font-bold {{ $dokColor }} uppercase tracking-wider">{{ $dokStatus }}</span></div>
+                                                </div>
+                                                <!-- Fisik Card -->
+                                                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+                                                    <div>
+                                                        <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Fisik & Survey</div>
+                                                        <div class="font-bold text-gray-800 mb-3">{{ $project->physicalElements->count() }} <span class="font-medium text-gray-400 text-sm">Titik Lokasi</span></div>
+                                                    </div>
+                                                    <div><span class="px-3 py-1 rounded-full text-[10px] font-bold {{ $fisikColor }} uppercase tracking-wider">{{ $fisikStatus }}</span></div>
+                                                </div>
+                                                <!-- Penilaian Card -->
+                                                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+                                                    <div>
+                                                        <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Penilaian Akhir</div>
+                                                        <div class="font-bold text-gray-800 mb-3">{{ $project->nilai ? 'Tersedia' : 'Kosong' }} <span class="font-medium text-gray-400 text-sm">Data</span></div>
+                                                    </div>
+                                                    <div><span class="px-3 py-1 rounded-full text-[10px] font-bold {{ $nilColor }} uppercase tracking-wider">{{ str_replace('_', ' ', $nilStatus) }}</span></div>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center py-4 text-gray-400 italic">Belum ada project.
+                                        <td colspan="4" class="text-center py-8 text-gray-400 italic">Belum ada project.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -159,4 +231,20 @@
             </div>
         </div>
     </div>
+
+    <!-- Script for Expandable Row -->
+    <script>
+        function toggleRow(rowId, iconId) {
+            const row = document.getElementById(rowId);
+            const icon = document.getElementById(iconId);
+            
+            if (row.classList.contains('hidden')) {
+                row.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                row.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+    </script>
 </x-app-layout>
