@@ -11,7 +11,7 @@
                 <div class="lg:col-span-1 space-y-6">
 
                     <!-- Dokumen -->
-                    <a href="{{ route('properti.dokumen') }}" class="block group">
+                    <a href="{{ route('properti.dokumen') }}" id="menu_dokumen" class="block group">
                         <div class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
                                     hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
                                     transition-all cursor-pointer border {{ request()->routeIs('properti.dokumen') ? 'border-[#82C17D] ring-1 ring-[#82C17D] bg-green-50/30' : 'border-gray-50' }}">
@@ -90,7 +90,7 @@
                             </span>
 
                             <!-- Tambah Project -->
-                                <a href="{{ route('client.projects.create') }}"
+                                <a href="{{ route('client.projects.create') }}" id="btn_tambah_project"
                                 class="inline-flex items-center gap-2
                                         bg-[#82C17D] hover:bg-[#6cad67]
                                         text-white text-xs font-bold

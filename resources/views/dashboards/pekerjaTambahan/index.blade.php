@@ -58,13 +58,58 @@
 
                 {{-- Side Column (Notifications & Status Summary) --}}
                 <div class="space-y-6">
-                    <div class="bg-white p-8 rounded-[28px] shadow-[0_18px_30px_rgba(0,0,0,0.04)]">
-                        <h3 class="text-xl font-bold mb-4">Notifikasi</h3>
-                        <div class="border-2 border-dashed border-gray-100 rounded-xl p-6 flex flex-col items-center justify-center text-center min-h-[100px]">
-                            <svg class="w-6 h-6 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                            <span class="text-sm text-gray-400">Tidak ada notifikasi baru</span>
-                        </div>
+                    <div class="bg-white p-8 rounded-[28px] shadow-[0_18px_30px_rgba(0,0,0,0.04)] relative overflow-hidden">
+                    <!-- Decorative background element -->
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-gradient-to-br from-green-50 to-blue-50 rounded-full blur-2xl opacity-70"></div>
+                    
+                    @php
+                        $notifications = auth()->user()->unreadNotifications;
+                    @endphp
+                    
+                    <div class="flex items-center justify-between mb-6 relative z-10">
+                        <h3 class="text-xl font-bold text-gray-800">Notifikasi</h3>
+                        @if($notifications->count() > 0)
+                            <span class="bg-red-50 text-red-500 text-xs font-bold px-2.5 py-1 rounded-full">{{ $notifications->count() }} Baru</span>
+                        @endif
                     </div>
+                    
+                    <div class="space-y-2 relative z-10">
+                        @forelse($notifications->take(5) as $notification)
+                            <div class="group flex items-start gap-3 p-3 -mx-3 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-100 relative">
+                                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#82C17D] rounded-r-full"></div>
+                                
+                                @php
+                                    $type = $notification->data['type'] ?? 'info';
+                                    $bgColor = $type == 'success' ? 'bg-green-50 text-green-500' : ($type == 'error' ? 'bg-red-50 text-red-500' : 'bg-blue-50 text-blue-500');
+                                @endphp
+                                
+                                <div class="{{ $bgColor }} p-2.5 rounded-full shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-800 font-medium leading-snug">{!! $notification->data['message'] ?? 'Notifikasi baru' !!}</p>
+                                    <p class="text-xs text-gray-400 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="group flex items-start gap-3 p-3 -mx-3 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-100 opacity-60 hover:opacity-100">
+                                <div class="bg-gray-100 p-2.5 rounded-full text-gray-500 shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-800 font-medium leading-snug">Tidak ada pesan atau notifikasi baru.</p>
+                                    <p class="text-xs text-gray-400 mt-1">Saat ini</p>
+                                </div>
+                            </div>
+                        @endforelse
+                    </div>
+                    
+                    @if($notifications->count() > 0)
+                        <button onclick="markAllNotificationsAsRead()" class="w-full mt-4 py-2.5 rounded-xl text-xs font-bold text-[#82C17D] hover:bg-green-50 transition-colors uppercase tracking-wider border border-green-100">
+                            Tandai Semua Dibaca
+                        </button>
+                    @endif
+                </div>
 
                     <div class="bg-white p-8 rounded-[28px] shadow-[0_18px_30px_rgba(0,0,0,0.04)]">
                         <h3 class="text-xl font-bold mb-4">Status Project</h3>
@@ -385,3 +430,19 @@
         }
     </script>
 </x-app-layout>
+
+<script>
+    function markAllNotificationsAsRead() {
+        fetch('{{ route('notifications.markAllAsRead') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        }).then(res => res.json()).then(data => {
+            if(data.success) {
+                window.location.reload();
+            }
+        });
+    }
+</script>
