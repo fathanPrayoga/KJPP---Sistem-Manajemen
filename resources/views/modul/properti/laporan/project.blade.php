@@ -126,7 +126,7 @@
 
                 <div class="space-y-1">
                     <label class="text-sm font-semibold">Dokumen (PDF)</label>
-                    <input type="file" name="file" accept="application/pdf" class="w-full text-sm">
+                    <input id="file" type="file" name="file" accept="application/pdf" class="w-full text-sm">
                 </div>
 
                 <button type="submit" class="w-full bg-[#82C17D] hover:bg-[#6ba867]

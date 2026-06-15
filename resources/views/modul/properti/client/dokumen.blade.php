@@ -18,7 +18,7 @@
 
                     <!-- Dokumen -->
                     <!-- Dokumen -->
-                    <a href="{{ route('properti.dokumen') }}" class="block group">
+                    <a href="{{ route('properti.dokumen') }}" id="menu_dokumen" class="block group">
                         <div
                             class="bg-white p-8 rounded-[35px] shadow-[0_20px_40px_rgba(0,0,0,0.06)]
                                 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]
@@ -91,7 +91,7 @@
                         <h3 class="text-xl font-bold text-gray-800">
                             Daftar Dokumen
                         </h3>
-                        <a href="{{ route('client.projects.create') }}"
+                        <a href="{{ route('client.projects.create') }}" id="btn_tambah_project"
                             class="bg-[#82C17D] hover:bg-[#6fa86a] text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-lg shadow-green-100 flex items-center gap-2">
                             <span>+ Tambah</span>
                         </a>

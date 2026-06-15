@@ -100,7 +100,7 @@
                                 <div class="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-[#82C17D]/30 transition bg-white group">
                                     <div class="flex items-center gap-4">
                                         <div class="flex items-center">
-                                            <input type="checkbox" class="w-5 h-5 projectCheckbox rounded border-gray-300 text-[#82C17D] focus:ring-[#82C17D] mr-2" value="{{ $project->id }}" onchange="updateActionButtons()">
+                                            <input type="checkbox" id="checkbox-project-{{ $project->id }}" data-testid="checkbox-project-{{ $project->id }}" class="w-5 h-5 projectCheckbox rounded border-gray-300 text-[#82C17D] focus:ring-[#82C17D] mr-2" value="{{ $project->id }}" onchange="updateActionButtons()">
                                         </div>
                                         <div class="w-12 h-12 rounded-xl bg-gray-50 group-hover:bg-green-50 flex items-center justify-center text-gray-400 group-hover:text-[#82C17D] transition hidden md:flex">
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
@@ -142,13 +142,13 @@
                         </div>
                     </div>
 
-                    <div id="actionButtons" class="mt-6 pt-6 border-t flex gap-3 justify-end">
+                    <div id="actionButtons" class="mt-6 pt-6 border-t flex gap-3 justify-end hidden">
                         <div class="max-w-md w-full flex gap-4 justify-end">
-                            <button onclick="openBulkRejectModal()"
+                            <button id="btn-bulk-reject" data-testid="btn-bulk-reject" onclick="openBulkRejectModal()"
                                 class="px-8 py-3 bg-white text-black rounded-full font-bold shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] transition-all text-red-600">
                                 Tolak
                             </button>
-                            <button onclick="verifySelected('approve')"
+                            <button id="btn-bulk-verify" data-testid="btn-bulk-verify" onclick="verifySelected('approve')"
                                 class="px-8 py-3 bg-[#82C17D] text-white rounded-full font-bold shadow-[0_4px_14px_0_rgba(130,193,125,0.39)] hover:shadow-[0_6px_20px_rgba(130,193,125,0.23)] hover:bg-[#6cad67] transition-all">
                                 Verifikasi
                             </button>
@@ -253,7 +253,7 @@
                 </div>
 
                 <div class="flex gap-3">
-                    <button type="button" onclick="submitBulkReject()"
+                    <button id="btn-submit-reject" data-testid="btn-submit-reject" type="button" onclick="submitBulkReject()"
                         class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-bold shadow-md">
                         Kirim Penolakan
                     </button>

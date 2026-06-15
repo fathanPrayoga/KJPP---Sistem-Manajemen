@@ -65,6 +65,18 @@ class ProjectController extends Controller
         return view('modul.properti.client.edit', compact('project'));
     }
 
+    public function clientFisikShow(Project $project)
+    {
+        if ($project->client_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Load relasi physicalElements agar bisa ditampilkan
+        $project->load('physicalElements');
+
+        return view('modul.properti.client.fisik_show', compact('project'));
+    }
+
     public function clientUpdate(Request $request, Project $project)
     {
         if ($project->client_id !== auth()->id()) {

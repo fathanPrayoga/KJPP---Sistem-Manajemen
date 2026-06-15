@@ -31,52 +31,55 @@
 
                     <!-- Nama Project -->
                     <div>
-                        <label class="block mb-2 font-medium text-gray-700">
+                        <label for="nama_project" class="block mb-2 font-medium text-gray-700">
                             Nama Project
                         </label>
-                        <input type="text" name="nama_project" required value="{{ $project->nama_project }}"
+                        <input type="text" id="nama_project" name="nama_project" required value="{{ $project->nama_project }}"
                             class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
                     </div>
 
                     <!-- Contract Date -->
                     <div>
-                        <label class="block mb-2 font-medium text-gray-700">
+                        <label for="contract_date" class="block mb-2 font-medium text-gray-700">
                             Contract Date
                         </label>
-                        <input type="date" name="contract_date" required value="{{ $project->contract_date ? \Carbon\Carbon::parse($project->contract_date)->format('Y-m-d') : '' }}"
+                        <input type="date" id="contract_date" name="contract_date" required value="{{ $project->contract_date ? \Carbon\Carbon::parse($project->contract_date)->format('Y-m-d') : '' }}"
                             class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
                     </div>
 
                     <!-- Contact Person -->
                     <div>
-                        <label class="block mb-2 font-medium text-gray-700">
+                        <label for="contact_person" class="block mb-2 font-medium text-gray-700">
                             Contact Person
                         </label>
-                        <input type="text" name="contact_person" required value="{{ $project->contact_person }}"
+                        <input type="text" id="contact_person" name="contact_person" required value="{{ $project->contact_person }}"
                             class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
                     </div>
 
                     <!-- Kategori Project -->
                     <div>
-                        <label class="block mb-2 font-medium text-gray-700">
+                        <label for="kategori" class="block mb-2 font-medium text-gray-700">
                             Kategori Project
                         </label>
-                        <select name="kategori" required
+                        <select id="kategori" name="kategori" required
                             class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
                             <option value="" disabled>Pilih Kategori Project</option>
-                            <option value="Contoh Kategori Project 1" {{ $project->kategori === 'Contoh Kategori Project 1' ? 'selected' : '' }}>Contoh Kategori Project 1</option>
-                            <option value="Contoh Kategori Project 2" {{ $project->kategori === 'Contoh Kategori Project 2' ? 'selected' : '' }}>Contoh Kategori Project 2</option>
-                            <option value="Contoh Kategori Project 3" {{ $project->kategori === 'Contoh Kategori Project 3' ? 'selected' : '' }}>Contoh Kategori Project 3</option>
+                            <option value="Penilaian Rumah Tinggal" {{ $project->kategori === 'Penilaian Rumah Tinggal' ? 'selected' : '' }}>Penilaian Rumah Tinggal</option>
+                            <option value="Penilaian Tanah Kosong" {{ $project->kategori === 'Penilaian Tanah Kosong' ? 'selected' : '' }}>Penilaian Tanah Kosong</option>
+                            <option value="Penilaian Ruko / Rukan" {{ $project->kategori === 'Penilaian Ruko / Rukan' ? 'selected' : '' }}>Penilaian Ruko / Rukan</option>
+                            <option value="Penilaian Gedung Komersial" {{ $project->kategori === 'Penilaian Gedung Komersial' ? 'selected' : '' }}>Penilaian Gedung Komersial</option>
+                            <option value="Penilaian Pabrik / Gudang" {{ $project->kategori === 'Penilaian Pabrik / Gudang' ? 'selected' : '' }}>Penilaian Pabrik / Gudang</option>
+                            <option value="Penilaian Mesin / Peralatan" {{ $project->kategori === 'Penilaian Mesin / Peralatan' ? 'selected' : '' }}>Penilaian Mesin / Peralatan</option>
                             <option value="Lainnya" {{ $project->kategori === 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                         </select>
                     </div>
 
                     <!-- Deskripsi -->
                     <div>
-                        <label class="block mb-2 font-medium text-gray-700">
+                        <label for="deskripsi" class="block mb-2 font-medium text-gray-700">
                             Deskripsi
                         </label>
-                        <textarea name="deskripsi" rows="4"
+                        <textarea id="deskripsi" name="deskripsi" rows="4"
                             class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">{{ $project->deskripsi }}</textarea>
                     </div>
 
@@ -123,15 +126,19 @@
                         <div id="documentContainer" class="space-y-3">
                             <!-- Default 1 File Input -->
                             <div class="document-row flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-gray-50 p-3 rounded-lg border border-gray-100 relative group">
-                                <select name="document_categories[]" required
+                                <select id="document_categories" name="document_categories[]" required
                                     class="w-full sm:w-1/3 rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D] text-sm">
                                     <option value="" disabled selected>Pilih Kategori Dokumen</option>
-                                    <option value="Contoh Kategori Dokumen A">Contoh Kategori Dokumen A</option>
-                                    <option value="Contoh Kategori Dokumen B">Contoh Kategori Dokumen B</option>
+                                    <option value="Dokumen Kepemilikan (SHM/HGB)">Dokumen Kepemilikan (SHM/HGB)</option>
+                                    <option value="Perizinan Bangunan (IMB/PBG)">Perizinan Bangunan (IMB/PBG)</option>
+                                    <option value="Tagihan Pajak (PBB)">Tagihan Pajak (PBB)</option>
+                                    <option value="Denah / Blueprint Bangunan">Denah / Blueprint Bangunan</option>
+                                    <option value="Identitas Pemilik (KTP/NPWP)">Identitas Pemilik (KTP/NPWP)</option>
+                                    <option value="Foto Objek Properti">Foto Objek Properti</option>
                                     <option value="Lainnya">Lainnya</option>
                                 </select>
 
-                                <input type="file" name="documents[]" accept="application/pdf" class="w-full sm:w-2/3 text-sm text-gray-600
+                                <input id="documents" type="file" name="documents[]" accept="application/pdf" class="w-full sm:w-2/3 text-sm text-gray-600
                                            file:mr-4 file:rounded-full file:border-0
                                            file:bg-green-50 file:px-4 file:py-2
                                            file:text-green-700 hover:file:bg-green-100">

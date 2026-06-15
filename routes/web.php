@@ -7,6 +7,7 @@ use App\Http\Controllers\PropertiController;
 use App\Http\Controllers\Client\ProjectController;
 use App\Http\Controllers\ProjectDocumentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\NotificationController;
 
 Route::redirect('/', '/login');
 
@@ -15,6 +16,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    // ===== NOTIFICATIONS =====
+    Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+
     // ===== PROPERTI =====
     Route::get('/properti/karyawan', [PropertiController::class, 'karyawan'])->name('properti.karyawan');
     Route::get('/properti/client', [PropertiController::class, 'client'])->name('properti.client');
@@ -46,6 +51,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
         Route::get('/projects/{project}/edit-client', [ProjectController::class, 'clientEdit'])->name('projects.clientEdit');
         Route::put('/projects/{project}/update-client', [ProjectController::class, 'clientUpdate'])->name('projects.clientUpdate');
+        Route::get('/projects/{project}/fisik', [ProjectController::class, 'clientFisikShow'])->name('projects.fisik.show');
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
     });
 
