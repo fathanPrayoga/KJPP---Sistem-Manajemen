@@ -26,11 +26,19 @@ class UserSeeder extends Seeder
         );
     }
 
-    // Akun Client (1 saja sebagai default)
-    \App\Models\User::updateOrCreate(
-        ['email' => 'client@test.com'],
-        ['name' => 'Client Default', 'password' => bcrypt('password'), 'role' => 'client']
-    );
+    // 3 Akun Client
+    $clients = [
+        ['name' => 'Client Satu', 'email' => 'client1@test.com'],
+        ['name' => 'Client Dua', 'email' => 'client2@test.com'],
+        ['name' => 'Client Tiga', 'email' => 'client3@test.com'],
+    ];
+
+    foreach ($clients as $c) {
+        \App\Models\User::updateOrCreate(
+            ['email' => $c['email']],
+            ['name' => $c['name'], 'password' => bcrypt('password'), 'role' => 'client']
+        );
+    }
 
     // 3 Akun Pekerja Tambahan
     $pekerjas = [
