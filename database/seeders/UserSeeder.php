@@ -12,8 +12,9 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-    // 3 Akun Karyawan
+    // 4 Akun Karyawan
     $karyawans = [
+        ['name' => 'Karyawan', 'email' => 'karyawan@test.com'],
         ['name' => 'Karyawan Satu', 'email' => 'karyawan1@test.com'],
         ['name' => 'Karyawan Dua', 'email' => 'karyawan2@test.com'],
         ['name' => 'Karyawan Tiga', 'email' => 'karyawan3@test.com'],
@@ -26,8 +27,9 @@ class UserSeeder extends Seeder
         );
     }
 
-    // 3 Akun Client
+    // 4 Akun Client
     $clients = [
+        ['name' => 'Client', 'email' => 'client@test.com'],
         ['name' => 'Client Satu', 'email' => 'client1@test.com'],
         ['name' => 'Client Dua', 'email' => 'client2@test.com'],
         ['name' => 'Client Tiga', 'email' => 'client3@test.com'],
@@ -40,8 +42,9 @@ class UserSeeder extends Seeder
         );
     }
 
-    // 3 Akun Pekerja Tambahan
+    // 4 Akun Pekerja Tambahan
     $pekerjas = [
+        ['name' => 'Pekerja', 'email' => 'pekerja@test.com'],
         ['name' => 'Pekerja Satu', 'email' => 'pekerja1@test.com'],
         ['name' => 'Pekerja Dua', 'email' => 'pekerja2@test.com'],
         ['name' => 'Pekerja Tiga', 'email' => 'pekerja3@test.com'],

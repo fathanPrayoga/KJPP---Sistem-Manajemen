@@ -17,15 +17,15 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $project = Project::create([
-            'client_id'      => auth()->id(),
-            'nama_project'   => $request->nama_project,
-            'kategori'       => $request->kategori,
-            'contract_date'  => $request->contract_date,
+            'client_id' => auth()->id(),
+            'nama_project' => $request->nama_project,
+            'kategori' => $request->kategori,
+            'contract_date' => $request->contract_date,
             'contact_person' => $request->contact_person,
-            'deskripsi'      => $request->deskripsi,
-            'status'         => 'pending',
-            'latitude'       => $request->latitude ?? null,
-            'longitude'      => $request->longitude ?? null,
+            'deskripsi' => $request->deskripsi,
+            'status' => 'pending',
+            'latitude' => $request->latitude ?? null,
+            'longitude' => $request->longitude ?? null,
         ]);
 
         $request->validate([
@@ -84,20 +84,20 @@ class ProjectController extends Controller
         }
 
         $request->validate([
-            'nama_project'   => 'required|string|max:255',
-            'kategori'       => 'required|string',
-            'contract_date'  => 'required|date',
+            'nama_project' => 'required|string|max:255',
+            'kategori' => 'required|string',
+            'contract_date' => 'required|date',
             'contact_person' => 'required|string',
-            'deskripsi'      => 'nullable|string',
+            'deskripsi' => 'nullable|string',
         ]);
 
         $project->update([
-            'nama_project'   => $request->nama_project,
-            'kategori'       => $request->kategori,
-            'contract_date'  => $request->contract_date,
+            'nama_project' => $request->nama_project,
+            'kategori' => $request->kategori,
+            'contract_date' => $request->contract_date,
             'contact_person' => $request->contact_person,
-            'deskripsi'      => $request->deskripsi,
-            'status'         => 'pending',
+            'deskripsi' => $request->deskripsi,
+            'status' => 'pending',
         ]);
 
         // If client uploads new documents, replace old ones
@@ -152,10 +152,10 @@ class ProjectController extends Controller
     {
         $data = $request->validate([
             'nama_project' => 'required|string|max:255',
-            'deskripsi'    => 'nullable|string',
-            'status'       => 'nullable|string|in:pending,proses,selesai',
-            'latitude'     => 'nullable|numeric',
-            'longitude'    => 'nullable|numeric',
+            'deskripsi' => 'nullable|string',
+            'status' => 'nullable|string|in:pending,proses,selesai',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
         // Update core fields (keep existing behaviour)

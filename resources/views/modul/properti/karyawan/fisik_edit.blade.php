@@ -10,39 +10,63 @@
 
                     <div class="mb-4">
                         <label class="block mb-2 font-medium text-gray-700">Nama Project</label>
-                        <input type="text" name="nama_project" value="{{ old('nama_project', $project->nama_project) }}" required class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
+                        <input type="text" name="nama_project" value="{{ old('nama_project', $project->nama_project) }}"
+                            required
+                            class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
                     </div>
 
                     <div class="mb-4">
                         <label class="block mb-2 font-medium text-gray-700">Deskripsi</label>
-                        <textarea name="deskripsi" rows="4" class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">{{ old('deskripsi', $project->deskripsi) }}</textarea>
+                        <textarea name="deskripsi" rows="4"
+                            class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">{{ old('deskripsi', $project->deskripsi) }}</textarea>
                     </div>
 
                     <div class="mb-4">
                         <label class="block mb-2 font-medium text-gray-700">Status</label>
                         <select name="status" class="w-full rounded-lg border-gray-300">
-                            <option value="pending" {{ (old('status', $project->status) == 'pending') ? 'selected' : '' }}>Pending</option>
-                            <option value="proses" {{ (old('status', $project->status) == 'proses') ? 'selected' : '' }}>Proses</option>
-                            <option value="selesai" {{ (old('status', $project->status) == 'selesai') ? 'selected' : '' }}>Selesai</option>
+                            <option value="pending" {{ (old('status', $project->status) == 'pending') ? 'selected' : '' }}>Menunggu Review Dokumen</option>
+                            <option value="menunggu_survei" {{ (old('status', $project->status) == 'menunggu_survei') ? 'selected' : '' }}>Dokumen Valid - Menunggu Survei</option>
+                            <option value="menunggu_verifikasi_fisik" {{ (old('status', $project->status) == 'menunggu_verifikasi_fisik') ? 'selected' : '' }}>Survei Selesai - Menunggu Review Fisik</option>
+                            <option value="proses_penilaian" {{ (old('status', $project->status) == 'proses_penilaian') ? 'selected' : '' }}>Data Fisik Valid - Proses Penilaian</option>
+                            <option value="selesai" {{ (old('status', $project->status) == 'selesai') ? 'selected' : '' }}>Laporan Selesai</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block mb-2 font-medium text-gray-700">Tugaskan ke Pekerja Tambahan (Assignee)</label>
+                        <select name="pekerja_id" class="w-full rounded-lg border-gray-300">
+                            <option value="">-- Belum Ditugaskan / Pilih Pekerja --</option>
+                            @foreach($pekerjas as $pekerja)
+                                <option value="{{ $pekerja->id }}" {{ (old('pekerja_id', $project->pekerja_id) == $pekerja->id) ? 'selected' : '' }}>
+                                    {{ $pekerja->name }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
                     <div class="mb-4">
                         <label class="block mb-2 font-medium text-gray-700">Lokasi / Alamat (opsional)</label>
                         <div class="flex gap-2">
-                            <input type="text" id="address-input" name="address" value="{{ old('address') }}" placeholder="Cari alamat (contoh: Jalan, Kota)" class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
-                            <button type="button" id="fetch-location" class="inline-flex items-center px-4 py-2  bg-gray-100 text-gray-700 rounded-md text-sm">Cari</button>
+                            <input type="text" id="address-input" name="address" value="{{ old('address') }}"
+                                placeholder="Cari alamat (contoh: Jalan, Kota)"
+                                class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D]">
+                            <button type="button" id="fetch-location"
+                                class="inline-flex items-center px-4 py-2  bg-gray-100 text-gray-700 rounded-md text-sm">Cari</button>
                         </div>
                         <p id="location-message" class="mt-2 text-sm text-gray-600"></p>
                         <!-- Editable coordinates (pre-populated from project if available) -->
                         <div class="mt-3 grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block mb-1 text-sm text-gray-600">Latitude</label>
-                                <input type="text" id="latitude" name="latitude" value="{{ old('latitude', $project->latitude ?? '') }}" placeholder="-6.2000000" class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D] text-sm">
+                                <input type="text" id="latitude" name="latitude"
+                                    value="{{ old('latitude', $project->latitude ?? '') }}" placeholder="-6.2000000"
+                                    class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D] text-sm">
                             </div>
                             <div>
                                 <label class="block mb-1 text-sm text-gray-600">Longitude</label>
-                                <input type="text" id="longitude" name="longitude" value="{{ old('longitude', $project->longitude ?? '') }}" placeholder="106.8166667" class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D] text-sm">
+                                <input type="text" id="longitude" name="longitude"
+                                    value="{{ old('longitude', $project->longitude ?? '') }}" placeholder="106.8166667"
+                                    class="w-full rounded-lg border-gray-300 focus:border-[#82C17D] focus:ring-[#82C17D] text-sm">
                             </div>
                         </div>
                     </div>
@@ -51,7 +75,8 @@
                         <x-primary-button>
                             Simpan
                         </x-primary-button>
-                        <a href="{{ route('properti.karyawan') }}" class="ml-2 inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md text-sm">Batal</a>
+                        <a href="{{ route('properti.karyawan') }}"
+                            class="ml-2 inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md text-sm">Batal</a>
                     </div>
                 </form>
             </div>
@@ -59,7 +84,7 @@
     </div>
 
     <script>
-        (function(){
+        (function () {
             const btn = document.getElementById('fetch-location');
             const input = document.getElementById('address-input');
             const msg = document.getElementById('location-message');
@@ -67,7 +92,7 @@
             const lonField = document.getElementById('longitude');
             let lastFetch = 0;
 
-            btn.addEventListener('click', async function(){
+            btn.addEventListener('click', async function () {
                 const address = (input.value || '').trim();
                 msg.textContent = '';
 

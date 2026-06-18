@@ -10,15 +10,15 @@ use App\Models\Nilai;
 class Project extends Model
 {
     protected $fillable = [
-        'client_id', 
-        'nama_project', 
-        'contract_date', 
-        'contact_person', 
-        'deskripsi', 
-        'status', 
+        'client_id',
+        'nama_project',
+        'contract_date',
+        'contact_person',
+        'deskripsi',
+        'status',
         'kategori',
         'asal_instansi',
-        'tanggal_mulai', 
+        'tanggal_mulai',
         'dokumen',
         'latitude',
         'longitude'

@@ -82,60 +82,89 @@
                 <div class="lg:col-span-2 bg-white p-8 rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-xl font-bold">Daftar Project</h3>
-                        <label class="flex items-center space-x-2 text-sm text-gray-500 cursor-pointer hover:text-gray-800 transition">
-                            <input id="selectAll" type="checkbox" class="w-5 h-5 rounded border-gray-300 text-[#82C17D] focus:ring-[#82C17D]" onchange="toggleSelectAll()">
+                        <label
+                            class="flex items-center space-x-2 text-sm text-gray-500 cursor-pointer hover:text-gray-800 transition">
+                            <input id="selectAll" type="checkbox"
+                                class="w-5 h-5 rounded border-gray-300 text-[#82C17D] focus:ring-[#82C17D]"
+                                onchange="toggleSelectAll()">
                             <span>Pilih Semua</span>
                         </label>
                     </div>
                     <div class="overflow-x-auto overflow-y-auto max-h-[400px] pr-2">
                         <div class="space-y-3">
                             @forelse($projects as $project)
-                                @php
-                                    $allVerified = $project->documents->every(fn($d) => $d->status === 'verified');
-                                    $hasRejected = $project->documents->some(fn($d) => $d->status === 'rejected');
-                                    $hasPending = $project->documents->some(fn($d) => $d->status === 'pending');
-                                    $statusColor = $allVerified ? 'bg-green-100 text-green-800' : ($hasRejected ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800');
-                                    $statusText = $allVerified ? 'Verified' : ($hasRejected ? 'Rejected' : 'Pending');
-                                @endphp
-                                <div class="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-[#82C17D]/30 transition bg-white group">
-                                    <div class="flex items-center gap-4">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="checkbox-project-{{ $project->id }}" data-testid="checkbox-project-{{ $project->id }}" class="w-5 h-5 projectCheckbox rounded border-gray-300 text-[#82C17D] focus:ring-[#82C17D] mr-2" value="{{ $project->id }}" onchange="updateActionButtons()">
-                                        </div>
-                                        <div class="w-12 h-12 rounded-xl bg-gray-50 group-hover:bg-green-50 flex items-center justify-center text-gray-400 group-hover:text-[#82C17D] transition hidden md:flex">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-gray-800 text-sm mb-0.5 capitalize">{{ $project->nama_project }}</h4>
-                                            <p class="text-xs text-gray-500 font-medium">{{ $project->client->name ?? 'Unknown' }} &bull; {{ $project->created_at->format('H.i') }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-3">
-                                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-[11px] font-bold uppercase tracking-wider hidden sm:block">
-                                            {{ $project->documents->count() }} File
-                                        </span>
-                                        <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $statusColor }}">
-                                            {{ $statusText }}
-                                        </span>
-                                        <button onclick="openDocumentModal(this.dataset.project)" data-project="{{ json_encode([
-                                                'id' => $project->id,
-                                                'nama' => $project->nama_project,
-                                                'documents' => $project->documents->map(fn($d) => [
-                                                    'id' => $d->id,
-                                                    'nama' => $d->nama_file,
-                                                    'url' => route('karyawan.document.download', $d->id),
-                                                    'created_at' => $d->created_at->format('d M Y'),
-                                                ])->toArray()
-                                            ]) }}"
-                                            class="inline-flex items-center px-4 py-2 bg-[#82C17D] hover:bg-[#6ba867] text-white text-xs font-bold rounded-full transition shadow-sm">
-                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                            Lihat
-                                        </button>
-                                    </div>
-                                </div>
+                                                        @php
+                                                            $allVerified = $project->documents->every(fn($d) => $d->status === 'verified');
+                                                            $hasRejected = $project->documents->some(fn($d) => $d->status === 'rejected');
+                                                            $hasPending = $project->documents->some(fn($d) => $d->status === 'pending');
+                                                            $statusColor = $allVerified ? 'bg-green-100 text-green-800' : ($hasRejected ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800');
+                                                            $statusText = $allVerified ? 'Verified' : ($hasRejected ? 'Rejected' : 'Pending');
+                                                        @endphp
+                                                        <div
+                                                            class="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-[#82C17D]/30 transition bg-white group">
+                                                            <div class="flex items-center gap-4">
+                                                                <div class="flex items-center">
+                                                                    <input type="checkbox" id="checkbox-project-{{ $project->id }}"
+                                                                        data-testid="checkbox-project-{{ $project->id }}"
+                                                                        class="w-5 h-5 projectCheckbox rounded border-gray-300 text-[#82C17D] focus:ring-[#82C17D] mr-2"
+                                                                        value="{{ $project->id }}" onchange="updateActionButtons()">
+                                                                </div>
+                                                                <div
+                                                                    class="w-12 h-12 rounded-xl bg-gray-50 group-hover:bg-green-50 flex items-center justify-center text-gray-400 group-hover:text-[#82C17D] transition hidden md:flex">
+                                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
+                                                                        </path>
+                                                                    </svg>
+                                                                </div>
+                                                                <div>
+                                                                    <h4 class="font-bold text-gray-800 text-sm mb-0.5 capitalize">
+                                                                        {{ $project->nama_project }}</h4>
+                                                                    <p class="text-xs text-gray-500 font-medium">
+                                                                        {{ $project->client->name ?? 'Unknown' }} &bull;
+                                                                        {{ $project->created_at->format('H.i') }}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="flex items-center gap-3">
+                                                                <span
+                                                                    class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-[11px] font-bold uppercase tracking-wider hidden sm:block">
+                                                                    {{ $project->documents->count() }} File
+                                                                </span>
+                                                                <span
+                                                                    class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $statusColor }}">
+                                                                    {{ $statusText }}
+                                                                </span>
+                                                                <button onclick="openDocumentModal(this.dataset.project)" data-project="{{ json_encode([
+                                    'id' => $project->id,
+                                    'nama' => $project->nama_project,
+                                    'documents' => $project->documents->map(fn($d) => [
+                                        'id' => $d->id,
+                                        'nama' => $d->nama_file,
+                                        'url' => route('karyawan.document.download', $d->id),
+                                        'created_at' => $d->created_at->format('d M Y'),
+                                    ])->toArray()
+                                ]) }}"
+                                                                    class="inline-flex items-center px-4 py-2 bg-[#82C17D] hover:bg-[#6ba867] text-white text-xs font-bold rounded-full transition shadow-sm">
+                                                                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor"
+                                                                        viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                                    </svg>
+                                                                    Lihat
+                                                                </button>
+                                                            </div>
+                                                        </div>
                             @empty
-                                <div class="flex flex-col items-center justify-center py-10 px-4 text-center bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
-                                    <svg class="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                <div
+                                    class="flex flex-col items-center justify-center py-10 px-4 text-center bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
+                                    <svg class="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                                        </path>
+                                    </svg>
                                     <p class="text-sm text-gray-500">Belum ada project.</p>
                                 </div>
                             @endforelse
@@ -148,7 +177,8 @@
                                 class="px-8 py-3 bg-white text-black rounded-full font-bold shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] transition-all text-red-600">
                                 Tolak
                             </button>
-                            <button id="btn-bulk-verify" data-testid="btn-bulk-verify" onclick="verifySelected('approve')"
+                            <button id="btn-bulk-verify" data-testid="btn-bulk-verify"
+                                onclick="verifySelected('approve')"
                                 class="px-8 py-3 bg-[#82C17D] text-white rounded-full font-bold shadow-[0_4px_14px_0_rgba(130,193,125,0.39)] hover:shadow-[0_6px_20px_rgba(130,193,125,0.23)] hover:bg-[#6cad67] transition-all">
                                 Verifikasi
                             </button>
@@ -215,7 +245,7 @@
                     @csrf
                     <div class="mb-4">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Catatan Verifikasi</label>
-                        <textarea name="notes" placeholder="Masukkan catatan..."
+                        <textarea name="notes" id="notes" placeholder="Masukkan catatan..."
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 h-24 focus:outline-none focus:border-[#82C17D] focus:ring-1 focus:ring-[#82C17D]"></textarea>
                     </div>
 
@@ -243,17 +273,20 @@
                 onclick="document.getElementById('bulkRejectModal').classList.add('hidden')"></div>
             <div class="relative w-full max-w-md rounded-2xl shadow-2xl bg-white p-8 z-10 border-t-4 border-red-500">
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Tolak Banyak Project</h3>
-                <p class="text-sm text-gray-600 mb-4">Anda akan menolak <span id="bulkRejectCount" class="font-bold text-red-600"></span> project sekaligus.</p>
+                <p class="text-sm text-gray-600 mb-4">Anda akan menolak <span id="bulkRejectCount"
+                        class="font-bold text-red-600"></span> project sekaligus.</p>
 
                 <div class="mb-5">
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Catatan Penolakan (Wajib)</label>
-                    <textarea id="bulkRejectNotes" placeholder="Tuliskan alasan mengapa dokumen-dokumen ini ditolak..." required
+                    <textarea id="bulkRejectNotes" placeholder="Tuliskan alasan mengapa dokumen-dokumen ini ditolak..."
+                        required
                         class="w-full border border-gray-300 rounded-lg px-4 py-3 h-28 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"></textarea>
                     <p class="text-xs text-red-500 mt-1 hidden" id="bulkRejectError">Catatan penolakan harus diisi.</p>
                 </div>
 
                 <div class="flex gap-3">
-                    <button id="btn-submit-reject" data-testid="btn-submit-reject" type="button" onclick="submitBulkReject()"
+                    <button id="btn-submit-reject" data-testid="btn-submit-reject" type="button"
+                        onclick="submitBulkReject()"
                         class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-bold shadow-md">
                         Kirim Penolakan
                     </button>
@@ -337,9 +370,9 @@
 
         function verifySelected(action, notes = '') {
             const selected = getSelectedProjects();
-            if (selected.length === 0) { 
-                Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Pilih minimal 1 project terlebih dahulu.' }); 
-                return; 
+            if (selected.length === 0) {
+                Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Pilih minimal 1 project terlebih dahulu.' });
+                return;
             }
 
             const form = document.createElement('form');
@@ -361,9 +394,9 @@
 
         function openBulkRejectModal() {
             const selected = getSelectedProjects();
-            if (selected.length === 0) { 
-                Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Pilih minimal 1 project yang ingin ditolak.' }); 
-                return; 
+            if (selected.length === 0) {
+                Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Pilih minimal 1 project yang ingin ditolak.' });
+                return;
             }
             document.getElementById('bulkRejectCount').innerText = selected.length;
             document.getElementById('bulkRejectNotes').value = '';
@@ -386,7 +419,7 @@
 
             const btnApprove = document.getElementById('btnApprove');
             const btnReject = document.getElementById('btnReject');
-            
+
             if (actionType === 'approve') {
                 btnApprove.classList.remove('hidden');
                 btnReject.classList.add('hidden');
@@ -414,5 +447,20 @@
             document.body.appendChild(form);
             form.submit();
         }
+
+        document.getElementById('verifyForm').addEventListener('submit', function (e) {
+            const submitter = e.submitter;
+            if (submitter && submitter.value === 'reject') {
+                const notes = document.getElementById('notes').value.trim();
+                if (!notes) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Catatan Diperlukan',
+                        text: 'Anda wajib memberikan catatan jika ingin menolak dokumen.'
+                    });
+                }
+            }
+        });
     </script>
 </x-app-layout>

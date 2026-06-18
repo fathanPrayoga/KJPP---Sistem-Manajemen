@@ -18,9 +18,9 @@ class DatabaseSeeder extends Seeder
         // Memanggil UserSeeder untuk mengisi akun Karyawan, Client, dan Pekerja
         $this->call([
             UserSeeder::class,
-            ProjectSeeder::class,
-            NilaiSeeder::class,
-            MessageSeeder::class,
+            MessageSeeder::class, // if they need chat history
+            // ProjectSeeder::class, // Dinonaktifkan untuk demo
+            // NilaiSeeder::class,   // Dinonaktifkan untuk demo
         ]);
 
     

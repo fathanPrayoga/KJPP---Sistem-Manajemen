@@ -65,7 +65,9 @@ class ProjectDocumentController extends Controller
     {
         $request->validate([
             'action' => 'required|in:approve,reject',
-            'notes' => 'nullable|string',
+            'notes' => 'required_if:action,reject|nullable|string',
+        ], [
+            'notes.required_if' => 'Catatan wajib diisi jika menolak dokumen.'
         ]);
 
         $status = $request->input('action') === 'approve' ? 'verified' : 'rejected';
@@ -86,7 +88,9 @@ class ProjectDocumentController extends Controller
     {
         $request->validate([
             'action' => 'required|in:approve,reject',
-            'notes' => 'nullable|string',
+            'notes' => 'required_if:action,reject|nullable|string',
+        ], [
+            'notes.required_if' => 'Catatan wajib diisi jika menolak project.'
         ]);
 
         $status = $request->input('action') === 'approve' ? 'verified' : 'rejected';
@@ -113,7 +117,9 @@ class ProjectDocumentController extends Controller
             'project_ids' => 'required|array|min:1',
             'project_ids.*' => 'integer|exists:projects,id',
             'action' => 'required|in:approve,reject',
-            'notes' => 'nullable|string',
+            'notes' => 'required_if:action,reject|nullable|string',
+        ], [
+            'notes.required_if' => 'Catatan wajib diisi jika menolak project.'
         ]);
 
         $status = $request->input('action') === 'approve' ? 'verified' : 'rejected';
